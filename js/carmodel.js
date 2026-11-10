@@ -133,6 +133,7 @@ function upgrade(mat, mn, tail, head) {
   const arr = [].concat(mat); const res = arr.map(m => {
     if (!m) return m; if (upCache.has(m)) { const u = upCache.get(m); if (u.userData.tail) tail.includes(u) || tail.push(u); if (u.userData.head) head.includes(u) || head.push(u); return u; }
     const n = m.name || ''; let u = m;
+    if (/Raptor_2017_Badge/.test(n)) { u = m.clone(); u.visible = false; upCache.set(m, u); return u; } // hide real FORD / F150 / RAPTOR lettering
     if (GLASS.test(n) && !TAIL.test(n)) { u = new THREE.MeshPhysicalMaterial({ userData: { glass: true }, color: '#06080a', metalness: 0.1, roughness: 0.0, transparent: true, opacity: 0.55, envMapIntensity: 2.2, clearcoat: 1, clearcoatRoughness: 0, depthWrite: false }); }
     else if (TAIL.test(n)) { u = m.clone(); u.emissive = new THREE.Color('#ff1a1a'); u.emissiveIntensity = 0.35; u.userData.tail = true; tail.push(u); }
     else if (HEAD.test(n)) { u = m.clone(); u.emissive = new THREE.Color('#fff4e0'); u.emissiveIntensity = 0.25; u.userData.head = true; head.push(u); }
