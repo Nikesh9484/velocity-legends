@@ -269,7 +269,7 @@ export function initUI() {
   $('#rCont').onclick = () => { endRace(); show('hub'); showroom(true); }; $('#rAgain').onclick = () => { if (lastCfg.mode === 'champ') { const st = S.champ[lastCfg.champ]; st.r = Math.max(0, st.r - 1); save(); } go(lastCfg); };
   $('#rNext').onclick = () => { const ch = CHAMPS.find(c => c.id === lastCfg.champ), st = S.champ[ch.id]; const [trk, sky] = ch.races[st.r]; go({ ...lastCfg, track: trk, sky }); };
   IN.onPause = () => togglePause();
-  $$('[data-ic]').forEach(e => e.innerHTML = ICON[e.dataset.ic] || ''); $$('.hb').forEach(b => b.style.setProperty('--img', `url(/assets/ui/h_${b.dataset.go}.webp)`)); $('#ver').textContent = 'v' + VERSION;
+  $$('[data-ic]').forEach(e => e.innerHTML = ICON[e.dataset.ic] || ''); $$('.hb').forEach(b => b.style.setProperty('--img', `url(${new URL("assets/ui/", location.href).href}h_${b.dataset.go}.webp)`)); $('#ver').textContent = 'v' + VERSION;
   bindTouch();
   // laurel wreath (results)
   { let p = ''; for (const sd of [-1, 1]) for (let k = 0; k < 9; k++) { const a = (200 - k * 17) * Math.PI / 180, r = 52, x = 100 + sd * Math.cos(a) * r * -1, y = 78 + Math.sin(a) * r * -1; const rot = sd * (k * 17 - 110); p += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="11" ry="4.6" transform="rotate(${rot.toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`; }
