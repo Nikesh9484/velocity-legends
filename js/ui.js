@@ -1,5 +1,5 @@
 // Velocity Legends — menus: title, hub, race setup, garage (buy, upgrade, paint), championships, settings, results, pause; 3D showroom
-import { THREE, V3, PI, $, $$, scene, camera, setSky, SFX, audioInit, AU, haptic, isTouch, applyQuality, Q, clamp, followSun, renderer, menuPR, sun, hemi, setPR, POST, useCarEnv } from './engine.js';
+import { THREE, V3, PI, $, $$, scene, camera, setSky, SFX, audioInit, AU, haptic, isTouch, isApple, applyQuality, Q, clamp, followSun, renderer, menuPR, sun, hemi, setPR, POST, useCarEnv } from './engine.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import { CARS, CAR, CLASSES, TRACKS, TRACK, SKIES, DIFFS, PAINTS, FINISH, UPGRADES, CHAMPS, POINTS, VERSION, CUSTOM, FLAGS } from './data.js';
 import { buildCar, preloadCar, isLoaded } from './carmodel.js';
@@ -220,7 +220,7 @@ function drawSettings() {
   if (E('sSens')) knob(E('sSens'), pct(0.5, 1.5, 11).map(v => ({ v, l: Math.round(v * 100) })), S.set.sens, v => { S.set.sens = +v; save(); });
   if (E('sHap')) toggle(E('sHap'), S.set.haptics, v => { S.set.haptics = v; save(); });
   if (E('sCam')) knob(E('sCam'), ['Chase', 'Far', 'Hood', 'Bumper'].map((l, i) => ({ v: i, l })), S.set.cam, v => { S.set.cam = +v; save(); });
-  if (E('sQ')) knob(E('sQ'), [{ v: 0, l: 'Auto' }, { v: 1, l: 'Low' }, { v: 2, l: 'Mid' }, { v: 3, l: 'High' }, { v: 4, l: 'Ultra' }], S.set.quality, v => { S.set.quality = +v; save(); POST.off = false; applyQuality(+v || Q.auto); });
+  if (E('sQ')) knob(E('sQ'), [{ v: 0, l: 'Auto' }, { v: 1, l: 'Low' }, { v: 2, l: 'Mid' }, { v: 3, l: 'High' }, { v: 4, l: 'Ultra' }], S.set.quality, v => { S.set.quality = +v; save(); POST.off = !+v && isTouch && !isApple; Q.noShadow = !+v && isTouch && !isApple; applyQuality(+v || Q.auto); });
   if (E('sBloom')) knob(E('sBloom'), Array.from({ length: 11 }, (_, k) => ({ v: k, l: k })), S.set.bloom ?? 5, v => { S.set.bloom = +v; POST.mul = +v / 5; save(); });
   if (E('sFilm')) toggle(E('sFilm'), S.set.film !== false, v => { S.set.film = v; POST.film = v; save(); });
   if (E('sVol')) knob(E('sVol'), Array.from({ length: 11 }, (_, k) => ({ v: k / 10 * 1.2, l: k * 10 })), Math.round((S.set.vol / 1.2) * 10) / 10 * 1.2, v => { S.set.vol = +v; save(); if (AU.master) AU.master.gain.value = +v; });

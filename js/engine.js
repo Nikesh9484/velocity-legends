@@ -22,6 +22,7 @@ export const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, power
 renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = isTouch ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
 export const Q = { level: lowEnd ? 1 : isTouch ? 2 : 3, pr: 1, shadows: true }; // 1 low · 2 medium · 3 high · 4 ultra
+if (isTouch && !isApple) Q.noShadow = true; // Android phones/tablets: no real-time shadows by default — keeps the frame rate (and control response) up
 const PRT = isTouch ? (isApple ? [0, 0.9, 1.25, 1.6, 2.2] : [0, 0.75, 1, 1.3, 1.8]) : [0, 0.85, 1, 1.4, 2]; // Android tablets: start lighter, adaptive code raises it when there is headroom
 export function prCap() { return Math.min(window.devicePixelRatio || 1, PRT[Q.level] || 1); }
 // menus/showroom are light to draw: always render them sharp
@@ -37,7 +38,7 @@ export function resize() { renderer.setSize(innerWidth, innerHeight, false); if 
 addEventListener('resize', resize);
 
 // ---------- cinematic post: bloom on lights, film grade, vignette ----------
-export const POST = { on: true, composer: null, bloom: null };
+export const POST = { on: true, composer: null, bloom: null, off: isTouch && !isApple }; // Android: skip the glow/colour passes by default for responsiveness
 const GradeShader = { uniforms: { tDiffuse: { value: null }, sat: { value: 1.2 }, con: { value: 1.13 }, vig: { value: 0.36 }, warm: { value: 0.018 } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
   fragmentShader: `uniform sampler2D tDiffuse; uniform float sat, con, vig, warm; varying vec2 vUv;

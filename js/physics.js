@@ -43,9 +43,9 @@ export class Vehicle {
     vF += F / m * dt;
     // ----- steering & yaw -----
     const steerLim = this.steerMax * clamp(1.15 - sp / 95, 0.22, 1); // less lock at speed
-    this.steer = lerp(this.steer, I.steer * steerLim, Math.min(1, dt * 7));
+    this.steer = lerp(this.steer, I.steer * steerLim, Math.min(1, dt * 16)); // quick response to the controls
     let rT = vF / this.wb * Math.tan(this.steer); const maxR = gripA / Math.max(Math.abs(vF), 1); rT = clamp(rT, -maxR * 1.1, maxR * 1.1);
-    const handle = grounded ? (I.hand ? 4 : 9) * mu : 0.4; this.yawRate = lerp(this.yawRate, rT + (I.hand ? Math.sign(this.steer) * Math.min(1.2, Math.abs(vF) / 14) * Math.abs(I.steer) : 0), Math.min(1, dt * handle));
+    const handle = grounded ? (I.hand ? 5 : 15) * mu : 0.4; this.yawRate = lerp(this.yawRate, rT + (I.hand ? Math.sign(this.steer) * Math.min(1.2, Math.abs(vF) / 14) * Math.abs(I.steer) : 0), Math.min(1, dt * handle));
     this.yaw += this.yawRate * dt;
     // ----- lateral grip (drift happens when this can't keep up) -----
     const latGrip = grounded ? (I.hand ? 1.1 : (TR.C && TR.C.loose ? 4.2 : 9)) * mu * (this.loose > 0.8 && TR.C && TR.C.loose ? 0.85 : 1) : 0.05;
