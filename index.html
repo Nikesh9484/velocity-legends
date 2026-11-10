@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Velocity Legends — Ultra Racing</title>
+<meta name="description" content="Velocity Legends: free browser racing game with photo-real hypercars, Formula cars, rally and off-road trucks. Grand Prix, night street, coast, desert and forest tracks.">
+<meta name="theme-color" content="#07080a">
+<link rel="manifest" href="manifest.webmanifest"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Velocity"><link rel="apple-touch-icon" href="assets/ui/icon192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,600;0,800;1,800;1,900&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/vl.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head><body>
+<canvas id="gl"></canvas>
+
+<!-- boot -->
+<div id="s-boot" class="scr on"><div class="kv"></div><div class="streaks"><i style="--y:18%;--d:2.6s;--w:38vw;--c:#ff2a2a;--dl:0.0s"></i><i style="--y:31%;--d:3.4s;--w:22vw;--c:#ffffff;--dl:1.1s"></i><i style="--y:44%;--d:2.2s;--w:46vw;--c:#7fb2ff;--dl:0.5s"></i><i style="--y:57%;--d:3.0s;--w:30vw;--c:#ff2a2a;--dl:1.8s"></i><i style="--y:66%;--d:2.4s;--w:52vw;--c:#ffffff;--dl:0.9s"></i><i style="--y:74%;--d:3.8s;--w:26vw;--c:#ffb35c;--dl:2.4s"></i><i style="--y:83%;--d:2.8s;--w:40vw;--c:#7fb2ff;--dl:1.5s"></i><i style="--y:90%;--d:3.2s;--w:34vw;--c:#ff2a2a;--dl:0.2s"></i></div><div class="vign"></div><div class="flare"></div><div class="logo3d huge"><span data-t="VELOCITY">VELOCITY</span><b data-t="LEGENDS">LEGENDS</b><i>ULTRA&nbsp;&nbsp;RACING</i></div><div class="bootfoot"><div class="bar"><u id="bootBar"></u></div><small id="bootMsg">WARMING UP THE ENGINES</small></div></div>
+
+<!-- title -->
+<div id="s-title" class="scr"><div class="streaks soft"><i style="--y:18%;--d:2.6s;--w:38vw;--c:#ff2a2a;--dl:0.0s"></i><i style="--y:31%;--d:3.4s;--w:22vw;--c:#ffffff;--dl:1.1s"></i><i style="--y:44%;--d:2.2s;--w:46vw;--c:#7fb2ff;--dl:0.5s"></i><i style="--y:57%;--d:3.0s;--w:30vw;--c:#ff2a2a;--dl:1.8s"></i><i style="--y:66%;--d:2.4s;--w:52vw;--c:#ffffff;--dl:0.9s"></i><i style="--y:74%;--d:3.8s;--w:26vw;--c:#ffb35c;--dl:2.4s"></i><i style="--y:83%;--d:2.8s;--w:40vw;--c:#7fb2ff;--dl:1.5s"></i><i style="--y:90%;--d:3.2s;--w:34vw;--c:#ff2a2a;--dl:0.2s"></i></div><div class="logo3d big"><span data-t="VELOCITY">VELOCITY</span><b data-t="LEGENDS">LEGENDS</b><i>ULTRA&nbsp;&nbsp;RACING</i></div>
+  <div class="tbox glass"><label>DRIVER NAME</label><div class="row"><input id="tName" maxlength="16" autocomplete="nickname" spellcheck="false"><button id="tGo" class="btn red xl pulse">START ENGINE ▸</button></div><small>HYPERCARS · FORMULA · RALLY · OFF-ROAD</small></div></div>
+
+<!-- hub -->
+<div id="s-hub" class="scr">
+  <div class="topbar"><div class="prof"><i class="av"><svg viewBox="0 0 32 32"><circle cx="16" cy="12" r="6" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M5 28c2-6 6-9 11-9s9 3 11 9" fill="none" stroke="#fff" stroke-width="2.4"/></svg></i><div><b id="hubName">Driver</b><span id="hubLv">LV 1</span><i class="xp"><u id="hubXp"></u></i></div></div>
+    <div class="logo3d mini"><span data-t="VELOCITY">VELOCITY</span><b data-t="LEGENDS">LEGENDS</b></div>
+    <div class="trr"><div class="coins"><span>CR</span><b id="hubCoins">0</b></div><button class="ico3d" data-go="settings" aria-label="Settings"><i data-ic="gear"></i></button></div></div>
+  <div class="hubrow">
+    <button class="sb" data-go="quick"><i class="dia"></i><b>QUICK RACE</b></button>
+    <button class="sb" data-go="champ"><i class="dia"></i><b>CHAMPIONSHIP</b></button>
+    <button class="sb" data-go="trial"><i class="dia"></i><b>TIME TRIAL</b></button>
+    <button class="sb" data-go="garage"><i class="dia"></i><b>GARAGE</b></button>
+  </div>
+  <div class="hubrow2">
+    <button class="gb" data-go="tune"><em class="chk"></em><b>UPGRADES</b></button>
+    <button class="gb store" data-go="garage"><b>CAR SHOWROOM</b><span class="cr3">CR</span></button>
+    <button class="gb" data-go="custom"><b>CUSTOMISE</b><em class="chk r"></em></button>
+  </div>
+  <div class="hint drag">Drag to turn the car</div><span id="ver"></span>
+</div>
+
+<!-- race setup -->
+<div id="s-setup" class="scr panel"><div class="ph"><button class="back">‹</button><div class="tag"><i class="dia"></i><h2 id="suTitle">RACE SETUP</h2></div><div class="pdots" id="suDots"></div></div>
+  <div class="steps" id="suSteps"></div><div class="sbody" id="suBody"></div>
+  <div class="sfoot"><span id="suInfo"></span><button class="btn red xl" id="suGo">CONTINUE</button></div></div>
+
+<!-- garage -->
+<div id="s-garage" class="scr panel side"><div class="ph"><button class="back">‹</button><div class="tag"><i class="dia"></i><h2>GARAGE</h2></div><div class="coins sm"><span>CR</span><b id="gCoins">0</b></div></div>
+  <div class="seg tabs" id="gTabs"><button data-t="cars">CARS</button><button data-t="tune">UPGRADES</button><button data-t="paint">PAINT</button><button data-t="custom">CUSTOMISE</button></div><div class="sbody" id="gBody"></div></div>
+
+<!-- championships -->
+<div id="s-champ" class="scr panel"><div class="ph"><button class="back">‹</button><div class="tag"><i class="dia"></i><h2>CHAMPIONSHIPS</h2></div></div><div class="sbody" id="chBody"></div></div>
+
+<!-- settings -->
+<div id="s-settings" class="scr panel"><div class="ph"><button class="back">‹</button><div class="tag"><i class="dia"></i><h2>SETTINGS</h2></div></div><div class="sbody" id="setBody"></div></div>
+
+<!-- loading a race -->
+<div id="s-load" class="scr"><div class="kv" id="ldKv"></div><div class="streaks"><i style="--y:18%;--d:2.6s;--w:38vw;--c:#ff2a2a;--dl:0.0s"></i><i style="--y:31%;--d:3.4s;--w:22vw;--c:#ffffff;--dl:1.1s"></i><i style="--y:44%;--d:2.2s;--w:46vw;--c:#7fb2ff;--dl:0.5s"></i><i style="--y:57%;--d:3.0s;--w:30vw;--c:#ff2a2a;--dl:1.8s"></i><i style="--y:66%;--d:2.4s;--w:52vw;--c:#ffffff;--dl:0.9s"></i><i style="--y:74%;--d:3.8s;--w:26vw;--c:#ffb35c;--dl:2.4s"></i><i style="--y:83%;--d:2.8s;--w:40vw;--c:#7fb2ff;--dl:1.5s"></i><i style="--y:90%;--d:3.2s;--w:34vw;--c:#ff2a2a;--dl:0.2s"></i></div><div class="vign"></div><div class="ld"><small>LOADING TRACK</small><h2 id="ldTitle"></h2><div class="chips" id="ldChips"></div><div class="bar"><u id="ldBar"></u></div><p id="ldTip"></p></div></div>
+<div id="s-race" class="scr"></div>
+
+<!-- results -->
+<div id="s-results" class="scr panel"><div class="res glass"><h2 id="rTitle">FINISH</h2><div class="laurel"><svg viewBox="0 0 200 140" id="laurelSvg"></svg><b id="rPos">1</b><small id="rPosL">POSITION</small></div><div class="rtable" id="rTable"></div><div class="rrew" id="rRew"></div>
+  <div class="rbtn"><button class="btn" id="rAgain">RACE AGAIN</button><button class="btn red" id="rNext">NEXT ROUND ▸</button><button class="btn gold" id="rCont">CONTINUE ▸</button></div></div></div>
+
+<!-- HUD -->
+<div id="hud">
+  <div class="hl"><div id="hPos" class="pos"></div><div id="hLap" class="lap"></div><div id="hTimes" class="times"></div><div id="hBoard" class="board"></div></div>
+  <canvas id="hMini"></canvas>
+  <div id="tach"></div>
+  <div id="hLights"><i></i><i></i><i></i><i></i><i></i></div>
+  <div id="hMsg"></div><div id="hWrong">WRONG WAY</div>
+</div>
+<div id="touch">
+  <button id="tLeft" class="tp steer"><svg viewBox="0 0 40 40"><path d="M26 8L12 20l14 12z"/></svg></button><button id="tRight" class="tp steer"><svg viewBox="0 0 40 40"><path d="M14 8l14 12-14 12z"/></svg></button>
+  <div id="tiltInd"><i></i></div><div id="tWheel"><div class="rim"><i></i></div></div>
+  <button id="tBrake" class="tp pedal brake"><span>BRAKE</span></button><button id="tGas" class="tp pedal gas"><span>GAS</span></button>
+  <button id="tNitro" class="tp round nitro">N2O</button><button id="tHand" class="tp round hand">HAND<br>BRAKE</button>
+  <button id="tCam" class="tp mini">CAM</button><button id="tSteer" class="tp mini">TILT</button><button id="tPause" class="tp mini">II</button>
+</div>
+<div id="intro"></div>
+<div id="pause"><div class="glass pc"><h2>PAUSED</h2><button class="btn gold" id="pRes">RESUME</button><button class="btn tiltonly" id="pTilt">CENTRE TILT STEERING</button><button class="btn" id="pRestart">RESTART RACE</button><button class="btn red" id="pQuit">QUIT TO MENU</button></div></div>
+<div id="rotate"><svg viewBox="0 0 64 64"><rect x="18" y="6" width="28" height="52" rx="5" fill="none" stroke="#fff" stroke-width="4"/><circle cx="32" cy="50" r="2.5" fill="#fff"/></svg>TURN YOUR PHONE SIDEWAYS<br><small style="font:600 14px Rajdhani;color:#8b949b">Racing is played in landscape</small></div><div id="toast"></div><div id="spin"><i></i></div>
+<script type="module" src="js/main.js"></script>
+</body></html>
