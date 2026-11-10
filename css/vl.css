@@ -385,3 +385,7 @@ body.touch[data-steer=tilt].racing #tiltInd{display:block}
 body.touch #tSteer{left:calc(50% + 60px);width:auto;padding:0 10px;font:700 13px Rajdhani,sans-serif;letter-spacing:1px;color:#cfd6dc}
 body.touch[data-steer=tilt] #tSteer{color:#fff;border-color:#c8102e;box-shadow:0 0 10px rgba(200,16,46,.6)}
 #tSteer{display:none}body.touch #tSteer{display:block}
+/* v1.16.3: setup cards use the full screen width (were cut at 900px on tablets) */
+#s-setup .sbody,#s-setup .sfoot{max-width:none;align-self:stretch}
+#s-setup.st0,#s-setup.st1{background:linear-gradient(90deg,rgba(6,7,9,.94) 0,rgba(6,7,9,.9) 70%,rgba(6,7,9,.8) 100%)}
+#s-setup .hscroll{-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 40px),transparent);padding-right:40px}

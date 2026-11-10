@@ -90,7 +90,7 @@ export function updateRace(dt) {
   if (me.fin) { mv.input.throttle = 0.25; mv.input.brake = 0; mv.input.steer = 0; }
   const ranks = RACE.cars.map(c => c.rank);
   for (const c of RACE.cars) if (c.driver) { if (!racing) { c.veh.input.throttle = 0; c.veh.input.brake = 1; continue; } const r = c.driver.update(dt, RACE.cars.map(o => o.veh), c.rank, me.rank); if (r === 'reset') resetCar(c); }
-  if (!racing) { mv.input.brake = 1; mv.rpmFree = IN.throttle; }
+  if (!racing) { mv.input.brake = 1; mv.input.throttle = 0; mv.input.steer = 0; mv.input.hand = 0; mv.input.nitro = 0; mv.input.reverse = false; mv.rpmFree = IN.throttle; } // car is held still on the grid: gas only revs the engine
   // physics substeps
   const sub = clamp(Math.ceil(dt / 0.0125), 2, 8), h = dt / sub; for (let k = 0; k < sub; k++) { for (const c of RACE.cars) c.veh.step(h); collideCars(RACE.cars.map(c => c.veh)); }
   if (!racing) { mv.rpm = lerp(mv.rpm, 900 + IN.throttle * (mv.redline - 1500), Math.min(1, dt * 6)); }
