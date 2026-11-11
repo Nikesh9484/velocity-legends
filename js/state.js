@@ -14,6 +14,9 @@ if (!S.set.steerV2) { S.set.steerV2 = 1; try { if (matchMedia('(pointer: coarse)
 /* v1.18: every free car is owned (new GT class starts with the 911 RSR); keep the last car in its class */
 for (const c of CARS) if (!c.price) S.owned[c.id] = 1;
 { const lc = CARS.find(c => c.id === S.last.car); if (lc && lc.cls !== S.last.cls) S.last.cls = lc.cls; }
+/* TEST MODE (Nikesh, 11 Nov 2026): whole game unlocked — every car owned, unlimited credits for upgrades/paint/customising. Set TEST_UNLOCK = false for launch. */
+export const TEST_UNLOCK = true;
+if (TEST_UNLOCK) { for (const c of CARS) S.owned[c.id] = 1; S.coins = Math.max(S.coins || 0, 99999999); }
 export function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 export const needXP = l => 1000 + l * 400;
 export function addXP(n) { S.xp += Math.round(n); let up = 0; while (S.xp >= needXP(S.level)) { S.xp -= needXP(S.level); S.level++; up++; } save(); return up; }
