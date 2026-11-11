@@ -112,7 +112,7 @@ function carEnvOf(key, bg) {
   lightformer(sc, 14, 1.2, [0, 8, -4], [0, 0, 0], 3.2 * k);
   lightformer(sc, 1.4, 9, [11, 2.5, 0], [0, 1, 0], 2.6 * k, night ? '#cfe0ff' : '#ffffff'); // side strips
   lightformer(sc, 1.4, 9, [-11, 2.5, 0], [0, 1, 0], 2.6 * k, night ? '#ffd9b8' : '#ffffff');
-  if (studio && !white) { lightformer(sc, 6, 1.0, [0, 2, -12], [0, 1, 0], 2.4, '#ff5a3a'); lightformer(sc, 6, 1.0, [0, 2, 12], [0, 1, 0], 2.0, '#9fc8ff'); lightformer(sc, 30, 0.35, [0, 0.4, 14], [0, 0.4, 0], 1.6); lightformer(sc, 30, 0.35, [0, 0.4, -14], [0, 0.4, 0], 1.6); }
+  if (studio && !white) { lightformer(sc, 6, 1.0, [0, 2, -12], [0, 1, 0], 2.4, '#ffffff'); lightformer(sc, 6, 1.0, [0, 2, 12], [0, 1, 0], 2.0, '#9fc8ff'); lightformer(sc, 30, 0.35, [0, 0.4, 14], [0, 0.4, 0], 1.6); lightformer(sc, 30, 0.35, [0, 0.4, -14], [0, 0.4, 0], 1.6); }
   if (!studio && !night) { const sunM = new THREE.Mesh(new THREE.SphereGeometry(1.6, 16, 8), new THREE.MeshBasicMaterial({ color: new THREE.Color('#fff3e0').multiplyScalar(40) })); sunM.position.copy(sunDir).multiplyScalar(45); sc.add(sunM); }
   const rt = pmrem.fromScene(sc, 0.0, 0.1, 100); sc.traverse(o => { if (o.isMesh && o.geometry !== envSph) o.geometry.dispose(); });
   return (carEnvCache[key] = rt.texture);

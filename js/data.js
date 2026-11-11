@@ -1,5 +1,5 @@
 // Velocity Legends — game data: cars, tracks, disciplines, upgrades, paints
-export const VERSION = '1.26';
+export const VERSION = '1.27';
 
 // Car stats: hp (power), kg (mass), top (km/h top speed), grip (lateral g on tarmac), aero (downforce factor), brake (g), steer (lock rad),
 // wb (wheelbase m), len (model length m), drive ('rwd'|'awd'), loose (grip multiplier on dirt), cyl (engine sound), redline (rpm), gears

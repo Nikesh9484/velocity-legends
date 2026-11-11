@@ -398,3 +398,7 @@ body.touch[data-steer=tilt] #tSteer{color:#fff;border-color:#c8102e;box-shadow:0
 .tp.steer{width:min(16vw,132px);height:min(16vw,132px)}#tRight{left:calc(18px + min(16vw,132px) + 18px)}
 .tp.nitro{right:auto;left:22px;bottom:calc(22px + min(16vw,132px) + 22px)}
 .tp.uturn{left:calc(22px + 64px + 18px);bottom:calc(22px + min(16vw,132px) + 22px);background:radial-gradient(circle at 40% 30%,#ffb35a,#8a3a0b);border-color:#ffd59f;font-size:10px}
+/* v1.27 speed lines: streaks rushing out from the centre at high speed (opacity driven by speed) */
+#speedfx{position:fixed;inset:0;z-index:20;pointer-events:none;opacity:0;display:none;background:repeating-conic-gradient(from 0deg at 50% 46%,rgba(255,255,255,.0) 0deg 2.2deg,rgba(255,255,255,.55) 2.4deg 2.6deg,rgba(255,255,255,0) 2.8deg 7deg);-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 46%,transparent 45%,#000 100%);mask-image:radial-gradient(ellipse 70% 60% at 50% 46%,transparent 45%,#000 100%);animation:sfx .18s linear infinite}
+body.racing #speedfx{display:block}
+@keyframes sfx{0%{transform:scale(1)}100%{transform:scale(1.06)}}

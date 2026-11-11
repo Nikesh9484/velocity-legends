@@ -157,12 +157,12 @@ function sparks(c) { const v = c.veh; for (let k = 0; k < 10; k++) FX.spark.emit
 
 function camTarget(out, look) {
   const v = RACE.me.veh, fx = Math.sin(v.yaw), fz = Math.cos(v.yaw), L = RACE.me.C.len; const vd = Math.atan2(v.v.x, v.v.z); const dir = v.speed > 3 ? vd : v.yaw;
-  const lag = RACE.cam <= 1 ? lerpAng(v.yaw, dir, 0.35) : v.yaw; const bx = Math.sin(lag), bz = Math.cos(lag);
-  if (RACE.cam === 0) { const D = L * 0.55 + 2.7; out.set(v.p.x - bx * D, v.y + 1.45 + L * 0.04, v.p.z - bz * D); look.set(v.p.x + fx * 4, v.y + 0.95, v.p.z + fz * 4); }
+  const lag = RACE.cam <= 1 ? lerpAng(v.yaw, dir, 0.12) : v.yaw; const bx = Math.sin(lag), bz = Math.cos(lag);
+  if (RACE.cam === 0) { const D = L * 0.5 + 2.3 - Math.min(0.5, v.speed / 140); out.set(v.p.x - bx * D, v.y + 1.25 + L * 0.04, v.p.z - bz * D); look.set(v.p.x + fx * 4, v.y + 0.95, v.p.z + fz * 4); }
   else if (RACE.cam === 1) { out.set(v.p.x - bx * (L * 1.0 + 5), v.y + 2.6, v.p.z - bz * (L * 1.0 + 5)); look.set(v.p.x + fx * 6, v.y + 1.1, v.p.z + fz * 6); }
   else if (RACE.cam === 2) { const H = RACE.me.model.h || 1.2, fo = RACE.me.C.cls === 'formula' ? -0.05 : 0.12; out.set(v.p.x + fx * L * fo, v.y + (RACE.me.C.cls === 'formula' ? 1.05 : H + 0.12), v.p.z + fz * L * fo); look.set(v.p.x + fx * 30, v.y + H * 0.8, v.p.z + fz * 30); }
   else if (RACE.cam === 3 || !RACE.me.model.driver) { out.set(v.p.x + fx * L * 0.48, v.y + 0.55, v.p.z + fz * L * 0.48); look.set(v.p.x + fx * 30, v.y + 0.5, v.p.z + fz * 30); }
-  else { const d = RACE.me.model.driver, g = RACE.me.model.group; g.updateMatrixWorld(); out.copy(d.position).add(_c1.set(0, 0.17, 0.05)); g.localToWorld(out); look.copy(d.position).add(_c1.set(0, -1.3, 20)); g.localToWorld(look); }
+  else { const d = RACE.me.model.driver, g = RACE.me.model.group; g.updateMatrixWorld(true); d.getWorldPosition(out); const up = 0.13 * (RACE.me.C.len / 4.5); out.y += up; out.x += fx * 0.12; out.z += fz * 0.12; /* eye height above the helmet centre, in world space (driver may sit inside a scaled holder) */ look.set(out.x + fx * 30, out.y - 1.0, out.z + fz * 30); }
 }
 // ---------- grid intro cinematic ----------
 const fmtQ = t => { const m = Math.floor(t / 60), s = t - m * 60; return `${String(m).padStart(2, '0')}:${s.toFixed(3).padStart(6, '0')}`; };
@@ -199,12 +199,12 @@ function drawWheel(car, dt) { const W = car.wheelUI; if (!W) return; W.g.rotatio
 function lerpAng(a, b, t) { let d = b - a; while (d > PI) d -= 2 * PI; while (d < -PI) d += 2 * PI; return a + d * t; }
 function snapCamera() { camTarget(camPos, camLook); const v = RACE.me.veh; camOff.set(camPos.x - v.p.x, camPos.y - v.y, camPos.z - v.p.z); camera.position.copy(camPos); camera.lookAt(camLook); }
 function updateCamera(dt) {
-  const v = RACE.me.veh; camTarget(_p, camLook); const k = RACE.cam <= 1 ? 1 - Math.exp(-dt * 15) : 1; const carP = _o.set(v.p.x, v.y, v.p.z); camOff.lerp(_p.sub(carP), k); camPos.copy(carP).add(camOff);
+  const v = RACE.me.veh; camTarget(_p, camLook); const k = RACE.cam <= 1 ? 1 - Math.exp(-dt * 20) : 1; const carP = _o.set(v.p.x, v.y, v.p.z); camOff.lerp(_p.sub(carP), k); camPos.copy(carP).add(camOff);
   const gh = heightAt(camPos.x, camPos.z, v.ti).y + 0.4; if (camPos.y < gh) camPos.y = gh;
   camera.position.copy(camPos); const sh = (RACE.shake || 0) + (TR.C.loose ? Math.min(0.15, v.speed / 400) : 0) + (v.boost ? 0.08 : 0);
   if (sh > 0) camera.position.add(_p.set(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).multiplyScalar(sh * 0.06));
   camera.lookAt(camLook); if (RACE.cam >= 2) camera.rotateZ(v.roll * 0.6);
-  const baseF = (innerWidth / innerHeight < 1 ? 78 : 62) + (RACE.cam === 4 ? 10 : 0); camera.fov = lerp(camera.fov, baseF + Math.min(10, v.speed / 9) + (v.boost ? 5 : 0), Math.min(1, dt * 3)); camera.updateProjectionMatrix();
+  const baseF = (innerWidth / innerHeight < 1 ? 78 : 62) + (RACE.cam === 4 ? 10 : 0); camera.fov = lerp(camera.fov, baseF + Math.min(22, v.speed / 4.5) + (v.boost ? 8 : 0), Math.min(1, dt * 4)); { const sf = document.getElementById('speedfx'); if (sf) sf.style.opacity = Math.max(0, Math.min(0.55, (v.speed * 3.6 - 130) / 200 + (v.boost ? 0.3 : 0))).toFixed(2); } camera.updateProjectionMatrix();
 }
 export function setPaused(p) { RACE.paused = p; if (p) { for (const c of RACE.cars) if (c.voice) c.voice.set(900, 0, 0, 0, 999); } }
 export { CAMS };

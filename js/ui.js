@@ -23,26 +23,26 @@ export async function showroom(on) {
     const shadowFloor = new THREE.Mesh(new THREE.CircleGeometry(9, 48), new THREE.ShadowMaterial({ opacity: 0.55 })); shadowFloor.rotation.x = -PI / 2; shadowFloor.position.y = 0.13; shadowFloor.receiveShadow = true; G.add(shadowFloor);
     // turntable: brushed dark metal with a glowing red edge
     const disc = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 3.72, 0.12, 96), new THREE.MeshPhysicalMaterial({ color: '#0f1013', metalness: 0.5, roughness: 0.55, clearcoat: 0.6, clearcoatRoughness: 0.35 })); disc.position.y = 0.06; disc.receiveShadow = true; G.add(disc); SHOW.disc = disc;
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(3.7, 0.03, 8, 128), new THREE.MeshBasicMaterial({ color: new THREE.Color('#ff2a2a').multiplyScalar(3) })); ring.rotation.x = PI / 2; ring.position.y = 0.1; G.add(ring); SHOW.ring = ring;
-    const halo = new THREE.Mesh(new THREE.PlaneGeometry(11, 11), new THREE.MeshBasicMaterial({ map: glowTex([[0, 'rgba(255,40,30,0)'], [0.6, 'rgba(255,40,30,0)'], [0.66, 'rgba(255,40,30,0.55)'], [0.78, 'rgba(255,40,30,0)']]), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); halo.rotation.x = -PI / 2; halo.position.y = 0.11; G.add(halo); SHOW.halo = halo;
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(3.7, 0.03, 8, 128), new THREE.MeshBasicMaterial({ color: new THREE.Color('#ff2a2a').multiplyScalar(0.9) })); ring.rotation.x = PI / 2; ring.position.y = 0.1; G.add(ring); SHOW.ring = ring;
+    const halo = new THREE.Mesh(new THREE.PlaneGeometry(11, 11), new THREE.MeshBasicMaterial({ map: glowTex([[0, 'rgba(255,40,30,0)'], [0.6, 'rgba(255,40,30,0)'], [0.66, 'rgba(255,40,30,0.55)'], [0.78, 'rgba(255,40,30,0)']]), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); halo.rotation.x = -PI / 2; halo.position.y = 0.11; halo.visible = false; G.add(halo); SHOW.halo = halo;
     // light architecture: overhead soft-box bar and an arc of vertical light blades behind the car
     const lm = c => new THREE.MeshBasicMaterial({ color: new THREE.Color(c).multiplyScalar(2.2), toneMapped: true });
     const top = new THREE.Mesh(new THREE.BoxGeometry(12, 0.08, 1.4), lm('#ffffff')); top.position.set(0, 7.5, 0); G.add(top);
     for (const z of [-2.2, 2.2]) { const s = new THREE.Mesh(new THREE.BoxGeometry(12, 0.06, 0.25), lm('#dfe8ff')); s.position.set(0, 7.45, z); G.add(s); }
     SHOW.blades = [];
     for (let i = 0; i < 23; i++) { const a = -1.3 + i / 22 * 2.6 + PI, r = 17.5, h = 4.2, red = i === 11; const b = new THREE.Mesh(new THREE.BoxGeometry(0.09, h, 0.09), new THREE.MeshBasicMaterial({ color: new THREE.Color(red ? '#ff2a2a' : '#c8d2e0').multiplyScalar(red ? 2.6 : 1.1) })); b.position.set(Math.sin(a) * r, 0.6 + h / 2, Math.cos(a) * r); G.add(b); SHOW.blades.push(b); }
-    for (const y of [0.35, 5.1]) { const st = new THREE.Mesh(new THREE.TorusGeometry(17.5, 0.035, 6, 160, 2.6), new THREE.MeshBasicMaterial({ color: new THREE.Color(y < 1 ? '#ff2a2a' : '#c8d2e0').multiplyScalar(y < 1 ? 2.2 : 0.9) })); st.rotation.set(PI / 2, 0, PI / 2 - 1.3 + PI); st.position.y = y; G.add(st); }
+    for (const y of [0.35, 5.1]) { const st = new THREE.Mesh(new THREE.TorusGeometry(17.5, 0.035, 6, 160, 2.6), new THREE.MeshBasicMaterial({ color: new THREE.Color(y < 1 ? '#b0141c' : '#c8d2e0').multiplyScalar(y < 1 ? 0.8 : 0.9) })); st.rotation.set(PI / 2, 0, PI / 2 - 1.3 + PI); st.position.y = y; G.add(st); }
     const wall = new THREE.Mesh(new THREE.CylinderGeometry(19, 19, 14, 64, 1, true, PI - 1.4, 2.8), new THREE.MeshStandardMaterial({ color: '#0a0b0d', roughness: 0.6, metalness: 0.4, side: THREE.BackSide })); wall.position.y = 7; G.add(wall);
     // volumetric beams from the ceiling
     const bt = beamTex(); SHOW.beams = [];
-    for (const [x, z, c, o] of [[0, 0, '#ffffff', 0.10], [-4.5, -2.5, '#ff4a3a', 0.07], [4.5, -2.5, '#8fb8ff', 0.07]]) { const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 3.4, 7.4, 32, 1, true), new THREE.MeshBasicMaterial({ map: bt, color: c, transparent: true, opacity: o, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })); cone.position.set(x, 3.75, z); G.add(cone); SHOW.beams.push(cone); }
+    for (const [x, z, c, o] of [[0, 0, '#ffffff', 0.10], [-4.5, -2.5, '#cfd8e6', 0.05], [4.5, -2.5, '#cfd8e6', 0.05]]) { const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 3.4, 7.4, 32, 1, true), new THREE.MeshBasicMaterial({ map: bt, color: c, transparent: true, opacity: o, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })); cone.position.set(x, 3.75, z); G.add(cone); SHOW.beams.push(cone); }
     // drifting dust in the light
     const N = 260, pos = new Float32Array(N * 3); for (let i = 0; i < N; i++) { pos[i * 3] = (Math.random() - 0.5) * 12; pos[i * 3 + 1] = Math.random() * 7; pos[i * 3 + 2] = (Math.random() - 0.5) * 12; }
     const dg = new THREE.BufferGeometry(); dg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     SHOW.dust = new THREE.Points(dg, new THREE.PointsMaterial({ size: 0.035, color: '#ffffff', transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending, map: glowTex([[0, '#fff'], [1, 'rgba(255,255,255,0)']]) })); G.add(SHOW.dust);
     // lights: soft top key (with shadow), red and blue rims, low front fill
     const key = new THREE.SpotLight('#ffffff', 220, 30, 0.55, 0.7, 1.6); key.position.set(0, 9, 1); key.target.position.set(0, 0, 0); key.castShadow = !isTouch; key.shadow.mapSize.set(1024, 1024); key.shadow.bias = -0.0005; G.add(key, key.target);
-    for (const [x, z, c, I] of [[-7, -5, '#ff3a2a', isTouch ? 7 : 22], [7, -5, '#6aa8ff', isTouch ? 10 : 28], [0, 8, '#ffffff', 30]]) { const l = new THREE.SpotLight(c, I, 30, 0.42, 0.9, 1.5); l.position.set(x, 3.2, z); l.target.position.set(0, 0.9, 0); G.add(l, l.target); }
+    for (const [x, z, c, I] of [[-7, -5, '#dfe6ff', isTouch ? 7 : 14], [7, -5, '#dfe6ff', isTouch ? 10 : 18], [0, 8, '#ffffff', 30]] /* no red rim light: it flared around the car on laptops (bloom) */) { const l = new THREE.SpotLight(c, I, 30, 0.42, 0.9, 1.5); l.position.set(x, 3.2, z); l.target.position.set(0, 0.9, 0); G.add(l, l.target); }
     // bright "infinity cove" studio for car selection (Monoposto-style), toggled with setStudio(true)
     SHOW.darkSet = G.children.filter(o => o !== SHOW.disc && o !== shadowFloor && o !== key && o !== key.target);
     const wf = new THREE.Mesh(new THREE.CircleGeometry(60, 64), new THREE.MeshStandardMaterial({ color: '#eceef1', roughness: 0.42, metalness: 0 })); wf.rotation.x = -PI / 2; wf.position.y = -0.001; wf.receiveShadow = true;
@@ -73,7 +73,7 @@ function applyPaint() { if (!SHOW.car) return; const p = paintOf(SHOW.id); if (p
 export function updateShowroom(dt) {
   if (!SHOW.g || !SHOW.g.visible) return; SHOW.t += dt; const T = SHOW.t; if (!SHOW.drag) SHOW.rot += dt * 0.16; const r = SHOW.rot;
   if (SHOW.car) { SHOW.car.group.rotation.y = r; SHOW.disc.rotation.y = r; SHOW.car.update(dt, 0, Math.sin(T / 1.4) * 0.25); }
-  SHOW.ring.material.color.setRGB(1, 0.16, 0.16).multiplyScalar(1.1 + Math.sin(T * 2.2) * 0.35); SHOW.halo.material.opacity = 0.3 + Math.sin(T * 2.2) * 0.12;
+  SHOW.ring.material.color.setRGB(0.75, 0.8, 0.9).multiplyScalar(0.7 + Math.sin(T * 2.2) * 0.1); SHOW.halo.material.opacity = 0.3 + Math.sin(T * 2.2) * 0.12;
   SHOW.blades.forEach((b, i) => { const k = 0.55 + 0.45 * Math.max(0, Math.sin(T * 1.6 - i * 0.35)); b.material.color.setScalar(k * 1.3); if (i === 11) b.material.color.setRGB(2.6, 0.4, 0.4); }); SHOW.beams.forEach((b, i) => b.material.opacity = [0.1, 0.07, 0.07][i] * (0.75 + 0.25 * Math.sin(T * 0.9 + i * 2)));
   const dp = SHOW.dust.geometry.attributes.position; for (let i = 0; i < dp.count; i++) { let y = dp.getY(i) + dt * 0.12; if (y > 7) y = 0; dp.setY(i, y); } dp.needsUpdate = true;
   // camera: slow cinematic drift; portrait frames the car larger and lower

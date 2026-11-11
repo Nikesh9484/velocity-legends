@@ -7,7 +7,7 @@ const SURF = { road: { mu: 1, drag: 0 }, kerb: { mu: 0.92, drag: 0.02 }, grass: 
 export class Vehicle {
   constructor(C, up = {}) {
     this.C = C; const L = k => up[k] || 0;
-    this.power = C.hp * 745.7 * (1 + 0.06 * L('eng')); this.mass = C.kg * (1 - 0.04 * L('weight')); this.gripG = C.grip * (1 + 0.05 * L('tyre')); this.brakeG = C.brake * (1 + 0.08 * L('brake'));
+    this.power = C.hp * 745.7 * 1.3 * (1 + 0.06 * L('eng')); /* arcade punch */ this.mass = C.kg * (1 - 0.04 * L('weight')); this.gripG = C.grip * (1 + 0.05 * L('tyre')); this.brakeG = C.brake * (1 + 0.08 * L('brake'));
     this.top = C.top / 3.6; this.aero = C.aero; this.loose = C.loose; this.wb = C.wb; this.steerMax = C.steer;
     this.nitroMax = 4 + L('turbo') * 1.5; this.nitro = this.nitroMax; this.nitroRefill = 0.12 + L('turbo') * 0.05;
     // drag chosen so that full power balances drag at top speed
@@ -43,15 +43,15 @@ export class Vehicle {
     }
     vF += F / m * dt;
     // ----- steering & yaw -----
-    const steerLim = this.steerMax * clamp(1.25 - sp / 120, 0.45, 1); // less lock at speed
-    this.steer = lerp(this.steer, I.steer * steerLim, Math.min(1, dt * 22)); // fast but smooth (full lock in ~0.1 s) response to the controls
-    let rT = vF / this.wb * Math.tan(this.steer); const maxR = gripA / Math.max(Math.abs(vF), 1); { const mk = TR.C && TR.C.loose ? 1.3 : 1.75; rT = clamp(rT, -maxR * mk, maxR * mk); } /* arcade: turns harder than real grip allows */
-    const handle = grounded ? (I.hand ? 5 : 26) * mu : 0.4; this.yawRate = lerp(this.yawRate, rT + (I.hand ? Math.sign(this.steer) * Math.min(1.2, Math.abs(vF) / 14) * Math.abs(I.steer) : 0), Math.min(1, dt * handle));
+    const steerLim = this.steerMax * clamp(1.3 - sp / 130, 0.62, 1); // less lock at speed
+    this.steer = lerp(this.steer, I.steer * steerLim, Math.min(1, dt * 30)); // full lock in ~0.07 s response to the controls
+    let rT = vF / this.wb * Math.tan(this.steer); const maxR = gripA / Math.max(Math.abs(vF), 1); { const mk = TR.C && TR.C.loose ? 1.6 : 2.3; rT = clamp(rT, -maxR * mk, maxR * mk); } /* arcade: turns harder than real grip allows */
+    const handle = grounded ? (I.hand ? 5 : 34) * mu : 0.4; this.yawRate = lerp(this.yawRate, rT + (I.hand ? Math.sign(this.steer) * Math.min(1.2, Math.abs(vF) / 14) * Math.abs(I.steer) : 0), Math.min(1, dt * handle));
     if (this.ut > 0) { const s = Math.min(dt, this.ut); this.ut -= dt; this.yawRate = this.utDir * Math.PI / 0.8 * s / dt; vF *= Math.exp(-dt * 2.2); if (this.ut <= 0) this.yawRate = 0; } /* one-tap 180° turn */
     this.yaw += this.yawRate * dt;
     // ----- lateral grip (drift happens when this can't keep up) -----
     this.driftT = I.hand ? 1 : Math.max(0, (this.driftT || 0) - dt * 1.1); /* grip comes back gradually after the handbrake → long, controllable drifts */
-    const latGrip = this.ut > 0 ? 40 : grounded ? (I.hand ? 1.1 : (1 - 0.7 * this.driftT) * (TR.C && TR.C.loose ? 7.5 : 13)) * mu * (this.loose > 0.8 && TR.C && TR.C.loose ? 0.85 : 1) : 0.05;
+    const latGrip = this.ut > 0 ? 40 : grounded ? (I.hand ? 1.1 : (1 - 0.7 * this.driftT) * (TR.C && TR.C.loose ? 9.5 : 18)) * mu * (this.loose > 0.8 && TR.C && TR.C.loose ? 0.85 : 1) : 0.05;
     const nfx = Math.sin(this.yaw), nfz = Math.cos(this.yaw);
     const vx = fx * vF + fz * vL, vz = fz * vF - fx * vL; // world velocity keeps its direction while the body yaws → slip angle
     vF = vx * nfx + vz * nfz; vL = vx * nfz - vz * nfx; vL *= Math.exp(-latGrip * dt);
