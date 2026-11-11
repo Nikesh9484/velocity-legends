@@ -12,20 +12,35 @@ async function loadRaw(file, drop, wheelRx) {
   return cache[file];
 }
 // bake every mesh into one flat car-space group, nose along +Z, wheels resting on y=0, real-world length
-function prepare(root, wheelRx) {
+// wheels baked into one body mesh (common on scanned/baked models): cut out the tyre+rim triangles geometrically
+function autoWheels(flat, sz) {
+  const swap = sz.x > sz.z, W = swap ? sz.z : sz.x, H = sz.y; const A = swap ? 2 : 0, Lx = swap ? 0 : 2; const tri = [];
+  for (const m of flat.children) { if (m.userData.wheel || Array.isArray(m.material)) continue; const g = m.geometry.index ? m.geometry.toNonIndexed() : m.geometry; m.geometry = g; const p = g.attributes.position.array; const n = p.length / 9;
+    for (let t = 0; t < n; t++) { const o = t * 9; tri.push([m, t, (p[o + A] + p[o + 3 + A] + p[o + 6 + A]) / 3, (p[o + 1] + p[o + 4] + p[o + 7]) / 3, (p[o + Lx] + p[o + 3 + Lx] + p[o + 6 + Lx]) / 3]); } }
+  const fit = sgn => { const out = tri.filter(t => Math.abs(t[2]) > 0.42 * W && Math.sign(t[4]) === sgn); const mid = out.filter(t => t[3] > 0.25 * H && t[3] < 0.6 * H).map(t => t[4]).sort((a, b) => a - b); if (mid.length < 30) return null;
+    const zc = mid[mid.length >> 1]; let top = 0; for (const t of out) if (Math.abs(t[4] - zc) < 0.06 * W) top = Math.max(top, t[3]); const r = top / 2; return r > 0.05 * H ? { zc, r } : null; };
+  const F = fit(1), R = fit(-1); flat.userData.aw = { F, R, W, H, n: tri.length, pos: tri.filter(t => t[4] > 0).length, outP: tri.filter(t => t[4] > 0 && Math.abs(t[2]) > 0.42 * W).length, outN: tri.filter(t => t[4] < 0 && Math.abs(t[2]) > 0.42 * W).length }; if (!F || !R) return; const sel = new Map();
+  for (const t of tri) { const w = t[4] > 0 ? F : R; const dy = t[3] - w.r, dz = t[4] - w.zc; if (Math.abs(t[2]) > 0.3 * W && t[3] > 0.02 * H && dy * dy + dz * dz < w.r * w.r * 1.04) { if (!sel.has(t[0])) sel.set(t[0], new Set()); sel.get(t[0]).add(t[1]); } }
+  for (const [m, set] of sel) { const g = m.geometry; const keep = [], take = []; const n = g.attributes.position.count / 3; for (let t = 0; t < n; t++) (set.has(t) ? take : keep).push(t);
+    const sub = list => { const ng = new THREE.BufferGeometry(); for (const [k, at] of Object.entries(g.attributes)) { const s = at.itemSize, arr = new at.array.constructor(list.length * 3 * s); let o = 0; for (const t of list) for (let v = 0; v < 3; v++) for (let c = 0; c < s; c++) arr[o++] = at.array[(t * 3 + v) * s + c]; ng.setAttribute(k, new THREE.BufferAttribute(arr, s, at.normalized)); } return ng; };
+    m.geometry = sub(keep); const wm = new THREE.Mesh(sub(take), m.material); wm.name = m.name + '_wheels'; wm.userData.wheel = true; flat.add(wm); }
+}
+function prepare(root, wheelArg) {
+  const wheelRx = wheelArg instanceof RegExp ? wheelArg : null;
   root.updateMatrixWorld(true);
-  const box = new THREE.Box3().setFromObject(root), sz = box.getSize(new V3()), ctr = box.getCenter(new V3());
   const meshes = []; root.traverse(o => { if (o.isMesh) meshes.push(o); });
+  const box = new THREE.Box3(); for (const m of meshes) box.expandByObject(m, true); /* meshes only: stray lines/points/empties must not lift the car */ const sz = box.getSize(new V3()), ctr = box.getCenter(new V3());
   const flat = new THREE.Group();
   // bake transforms; merge everything that shares a material into one mesh (far fewer draw calls). Wheel parts stay separate so they can spin.
   const groups = new Map();
   for (const m of meshes) { const g = m.geometry.clone(); g.applyMatrix4(m.matrixWorld); g.translate(-ctr.x, -box.min.y, -ctr.z);
     const mn = [].concat(m.material).map(x => x && x.name || '').join('|'); const isW = !!(wheelRx && (wheelRx.test(mn) || wheelRx.test(m.name) || (m.parent && wheelRx.test(m.parent.name))));
     if (Array.isArray(m.material)) { const n = new THREE.Mesh(g, m.material); n.name = m.name; n.userData.wheel = isW; flat.add(n); continue; }
-    for (const k of Object.keys(g.attributes)) { const at = g.attributes[k]; if (!['position', 'normal', 'uv', 'uv1', 'tangent', 'color'].includes(k)) g.deleteAttribute(k); else if (at.isInterleavedBufferAttribute) g.setAttribute(k, at.clone()); }
+    for (const k of Object.keys(g.attributes)) { const at = g.attributes[k]; if (!['position', 'normal', 'uv', 'uv1', 'uv2', 'uv3', 'tangent', 'color'].includes(k)) g.deleteAttribute(k); else if (at.isInterleavedBufferAttribute) g.setAttribute(k, at.clone()); }
     const key = (isW ? 'W|' : '') + m.material.uuid + '|' + Object.keys(g.attributes).sort().join(',') + '|' + !!g.index; if (!groups.has(key)) groups.set(key, { mat: m.material, list: [], name: m.name, w: isW }); groups.get(key).list.push(g); }
   for (const G of groups.values()) { let geo = G.list.length > 1 ? mergeGeometries(G.list) : G.list[0]; if (!geo) { for (const g of G.list) { const n = new THREE.Mesh(g, G.mat); n.name = G.name; n.userData.wheel = G.w; flat.add(n); } continue; } const n = new THREE.Mesh(geo, G.mat); n.name = G.name; n.userData.wheel = G.w; flat.add(n); }
   flat.userData.sz = sz; flat.userData.swap = sz.x > sz.z; // length along X → rotate later
+  if (wheelArg === 'auto') autoWheels(flat, sz);
   return flat;
 }
 function paintMat(src, col, finish) {
@@ -81,7 +96,7 @@ export async function buildCar(id, opts = {}) {
   // wheels: find meshes, split by quadrant, re-parent into spinning pivots (car space)
   const wheels = [];
   if (C.wheel) {
-    const wm = holder.children.filter(m => m.userData.wheel);
+    const wm = holder.children.filter(m => m.userData.wheel); /* includes 'auto' wheels */
     const groups = {};
     for (const m of wm) {
       const g = m.geometry.clone(); g.applyMatrix4(m.matrixWorld); // car space

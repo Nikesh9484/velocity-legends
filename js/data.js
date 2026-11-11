@@ -1,5 +1,5 @@
 // Velocity Legends — game data: cars, tracks, disciplines, upgrades, paints
-export const VERSION = '1.21';
+export const VERSION = '1.22';
 
 // Car stats: hp (power), kg (mass), top (km/h top speed), grip (lateral g on tarmac), aero (downforce factor), brake (g), steer (lock rad),
 // wb (wheelbase m), len (model length m), drive ('rwd'|'awd'), loose (grip multiplier on dirt), cyl (engine sound), redline (rpm), gears
@@ -25,11 +25,25 @@ export const CARS = [
     f: 'w13', ry: Math.PI, paint: /Body_Main|Body_Wings/i, wheel: /Tyre|WheelHub/i, col: '#bfc5c9', desc: 'Ground-effect F1 machine. Pure downforce.', open: true },
   { id: 'mcl35', n: 'Papaya F-35 Racer', cls: 'formula', origin: 'UK', price: 60000, hp: 1010, kg: 798, top: 350, grip: 1.95, aero: 2.5, brake: 2.25, steer: 0.42, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13000, gears: 8,
     f: 'mcl35', ry: 0, paint: /mcl35m_png|mcl35m_c/i, wheel: /rim_png|tyrewall|tread/i, col: '#ff8000', desc: 'Papaya-orange F1 car with razor-sharp turn-in.', open: true },
+  { id: 'f_w14', n: 'Black Arrow W-14', cls: 'formula', origin: 'Germany', price: 0, hp: 1020, kg: 798, top: 350, grip: 1.95, aero: 2.5, brake: 2.25, steer: 0.42, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13000, gears: 8,
+    f: 'f_w14', ry: 0, paint: /x^/, wheel: /^(Material|Material\.00[1-4]|pirelli)$/, col: '#111317', desc: 'All-black ground-effect racer with a silver halo.', open: true },
+  { id: 'f_sf23', n: 'Rosso Corsa SF-23', cls: 'formula', origin: 'Italy', price: 90000, hp: 1030, kg: 798, top: 352, grip: 1.95, aero: 2.45, brake: 2.25, steer: 0.43, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13200, gears: 8,
+    f: 'f_sf23', ry: 0, paint: /x^/, wheel: 'auto', col: '#c1121f', desc: 'Scarlet Italian single-seater, monster straight-line speed.', open: true },
+  { id: 'f_mcl60', n: 'Papaya MC-60', cls: 'formula', origin: 'UK', price: 85000, hp: 1015, kg: 798, top: 348, grip: 2.0, aero: 2.55, brake: 2.3, steer: 0.44, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13000, gears: 8,
+    f: 'f_mcl60', ry: 0, paint: /x^/, wheel: 'auto', col: '#ff7a00', desc: 'Papaya-and-black chassis with the sharpest turn-in.', open: true },
+  { id: 'f_amr23', n: 'Verde Racing AM-23', cls: 'formula', origin: 'UK', price: 80000, hp: 1010, kg: 798, top: 346, grip: 1.98, aero: 2.5, brake: 2.25, steer: 0.43, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13000, gears: 8,
+    f: 'f_amr23', ry: 0, paint: /x^/, wheel: 'auto', col: '#0b6e4f', desc: 'British-racing-green challenger, superb in fast corners.', open: true },
   // ---------- RALLY ----------
   { id: 'yaris', n: 'Kaze GR Rally1', cls: 'rally', origin: 'Japan', price: 0, hp: 500, kg: 1260, top: 220, grip: 1.15, aero: 0.4, brake: 1.25, steer: 0.62, wb: 2.63, len: 4.2, drive: 'awd', loose: 0.92, cyl: 4, redline: 8000, gears: 6,
     f: 'yaris', ry: 0, paint: /car_paint/i, wheel: /^Object_(11|14|17|20)$/, col: '#e8e8e8', desc: 'Hybrid WRC weapon built for gravel and jumps.' },
   { id: 'delta', n: 'Integra Delta Evo II', cls: 'rally', origin: 'Italy', price: 30000, hp: 420, kg: 1150, top: 215, grip: 1.1, aero: 0.3, brake: 1.2, steer: 0.62, wb: 2.48, len: 3.9, drive: 'awd', loose: 0.9, cyl: 4, redline: 7500, gears: 5,
     f: 'delta', ry: 0, paint: /^Paint$/i, wheel: /rim|Tire/i, col: '#d40000', desc: 'Legendary boxy rally champion.' },
+  { id: 'r_puma', n: 'Storm Puma Rally1', cls: 'rally', origin: 'UK', price: 0, hp: 520, kg: 1260, top: 225, grip: 1.15, aero: 0.45, brake: 1.25, steer: 0.62, wb: 2.6, len: 4.2, drive: 'awd', loose: 0.92, cyl: 3, redline: 8000, gears: 6,
+    f: 'r_puma', ry: 0, paint: /x^/, wheel: /MI_Tm_Wheel|MI_Tm_Tread/i, col: '#1f4fd1', desc: 'Hybrid Rally1 crossover in midnight-blue livery.' },
+  { id: 'r_fiesta', n: 'Vento Fiesta WRC', cls: 'rally', origin: 'UK', price: 35000, hp: 380, kg: 1190, top: 210, grip: 1.12, aero: 0.4, brake: 1.2, steer: 0.63, wb: 2.5, len: 4.1, drive: 'awd', loose: 0.92, cyl: 4, redline: 8000, gears: 6,
+    f: 'r_fiesta', ry: 0, paint: /WCCARBODY/i, wheel: /ac3dmat123|ac3dmat126/i, drop: /ac3dmat124/i, col: '#c1121f', desc: 'Compact WRC hatch, nimble on loose gravel.' },
+  { id: 'r_impreza', n: 'Pleiades WRX Rally', cls: 'rally', origin: 'Japan', price: 28000, hp: 340, kg: 1350, top: 215, grip: 1.1, aero: 0.35, brake: 1.15, steer: 0.62, wb: 2.62, len: 4.4, drive: 'awd', loose: 0.9, cyl: 4, redline: 7500, gears: 6,
+    f: 'r_impreza', ry: 0, paint: /wrxM_CarPaint_Max1/i, wheel: /wrxM_Rim_Main|wrxM_RimBadge|Wheel1A/i, col: '#1f4fd1', desc: 'Boxer-engined blue legend with gold wheels.' },
   // ---------- OFF-ROAD ----------
   { id: 'buggy', n: 'Dune Buggy RX', cls: 'offroad', origin: 'USA', price: 0, hp: 380, kg: 820, top: 190, grip: 1.0, aero: 0.1, brake: 1.1, steer: 0.65, wb: 2.4, len: 3.6, drive: 'rwd', loose: 1.0, cyl: 4, redline: 7800, gears: 5,
     f: 'buggy', ry: 0, drop: /env_mat/i, paint: /car_mat/i, wheel: /wheels_mat/i, col: '#2a7d3f', desc: 'Long-travel desert buggy. Flies over dunes.', open: true },
@@ -37,6 +51,8 @@ export const CARS = [
     f: 'raptor', ry: Math.PI, paint: /F-150_Paint/i, wheel: /Rim|Offroad_Tires/i, col: '#1c4e9e', desc: 'Twin-turbo trophy-spec pickup on huge tyres.' },
   { id: 'patrol', n: 'Desert Patrol Extreme', cls: 'offroad', origin: 'Japan', price: 35000, hp: 520, kg: 2400, top: 185, grip: 0.98, aero: 0.1, brake: 1.0, steer: 0.6, wb: 3.08, len: 5.3, drive: 'awd', loose: 1.0, cyl: 8, redline: 6800, gears: 7,
     f: 'patrol', ry: Math.PI, paint: /Panel|Chassis/i, wheel: /prochee\.030|zapaska/i, col: '#f0f0f0', desc: 'Rally-raid giant tuned for sand and mud.' },
+  { id: 'o_scibuggy', n: 'Phantom Raid Buggy', cls: 'offroad', origin: 'USA', price: 0, hp: 420, kg: 900, top: 200, grip: 1.02, aero: 0.12, brake: 1.12, steer: 0.65, wb: 2.6, len: 4.0, drive: 'rwd', loose: 1.0, cyl: 4, redline: 7800, gears: 5,
+    f: 'o_scibuggy', ry: 0, paint: /main_body/i, wheel: /^(Material\.007|rims)$/, col: '#2b2f33', desc: 'Carbon-armoured raid buggy with long-travel suspension.' },
 ];
 export const CAR = id => CARS.find(c => c.id === id) || CARS[0];
 
