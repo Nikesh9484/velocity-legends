@@ -106,7 +106,7 @@ function carEnvOf(key, bg) {
   const sc = new THREE.Scene(), white = key === 'white', studio = key === 'studio' || white, night = key === 'night';
   if (bg) { const sk = new THREE.Mesh(envSph, new THREE.MeshBasicMaterial({ map: bg, side: THREE.BackSide, color: new THREE.Color(1, 1, 1).multiplyScalar(night ? 0.7 : 0.8) })); sk.rotation.y = -PI / 2; sc.add(sk); }
   else { sc.background = new THREE.Color(white ? '#34383e' : '#050608'); const fl = new THREE.Mesh(new THREE.CircleGeometry(40, 32), new THREE.MeshBasicMaterial({ color: white ? '#d7dade' : '#0b0c0e' })); fl.rotation.x = -PI / 2; fl.position.y = -1; sc.add(fl); }
-  const k = studio ? 1 : night ? 0.4 : 0.85; // soft-box strength
+  const k = studio ? 1 : night ? 0.4 : 0.6; // soft-box strength
   lightformer(sc, 14, 3.2, [0, 9, 0], [0, 0, 0], 4.5 * k);              // long overhead box
   lightformer(sc, 14, 1.2, [0, 8, 4], [0, 0, 0], 3.2 * k);
   lightformer(sc, 14, 1.2, [0, 8, -4], [0, 0, 0], 3.2 * k);

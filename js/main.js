@@ -1,7 +1,7 @@
 // Velocity Legends — boot & main loop
 import './lockview.js';
 import { renderer, scene, camera, resize, applyQuality, Q, $, isTouch, prCap, initPost, render, setPR, POST, AU } from './engine.js';
-const prFloor = isTouch ? 0.6 : 0.7;
+const prFloor = isTouch ? 0.75 : 0.7;
 import { S } from './state.js';
 import { RACE, updateRace } from './race.js';
 import { hudUpdate } from './hud.js';
@@ -32,6 +32,6 @@ function loop(t) {
     // too slow even at the lowest resolution: drop the glow/film effects
     if (!S.set.quality && fps < 30 && Q.pr <= prFloor + 0.01) { if (!POST.off) { POST.on = false; POST.off = true; } else if (renderer.shadowMap.enabled) { renderer.shadowMap.enabled = false; Q.noShadow = true; scene.traverse(o => { if (o.material) [].concat(o.material).forEach(m => m.needsUpdate = true); }); } }
     if (!RACE.on && !S.set.quality) { if (fps < 40 && Q.mpr > prFloor) { Q.mpr = Math.max(prFloor, (Q.mpr || 1) - 0.15); setPR(Q.mpr); Q.pr = Q.mpr; } }
-    if (RACE.on && !S.set.quality) { if (fps < 40 && Q.pr > prFloor) { Q.pr = Math.max(prFloor, Q.pr - (fps < 25 ? 0.2 : 0.1)); setPR(Q.pr); slow++; } else if (fps > 56 && Q.pr < prCap() && slow < 4) { Q.pr = Math.min(prCap(), Q.pr + 0.08); setPR(Q.pr); } } }
+    if (RACE.on && !S.set.quality) { if (fps < 40 && Q.pr > prFloor) { Q.pr = Math.max(prFloor, Q.pr - (fps < 25 ? 0.2 : 0.1)); setPR(Q.pr); slow++; } else if (fps > 56 && Q.pr < prCap()) { Q.pr = Math.min(prCap(), Q.pr + 0.08); setPR(Q.pr); } } }
 }
 requestAnimationFrame(loop);

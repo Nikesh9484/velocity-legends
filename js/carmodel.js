@@ -118,7 +118,7 @@ export async function buildCar(id, opts = {}) {
     nitroRGB() { const c = new THREE.Color(customCol('nitro', (api.custom || {}).nitro || 'blue')); return [c.r, c.g, c.b]; },
     setBrake(on, night) { for (const m of tail) { m.emissiveIntensity = on ? 3.2 : night ? 1.1 : 0.35; } },
     setHeadlights(on) { for (const m of head) m.emissiveIntensity = on ? 2.5 : 0.25; },
-    update(dt, speed, steer) { api.spin += speed * dt / 0.34; const bo = Math.min(0.92, Math.max(0, (Math.abs(speed) - 7) / 22)); for (const w of wheels) { w.pivot.rotation.x = api.spin * (0.34 / w.r); if (w.front) w.steer.rotation.y = steer; if (w.blur) { w.blur.visible = bo > 0.02; w.blur.material.opacity = bo; w.blur.rotation.z = api.spin; } } },
+    update(dt, speed, steer) { const as = Math.abs(speed); api.spin += Math.sign(speed) * Math.min(as / 0.34, 9 + as * 0.16) * dt; /* visible spin: real rate would strobe and look frozen on a 60 Hz screen */ const bo = Math.min(0.4, Math.max(0, (as - 12) / 40)); for (const w of wheels) { w.pivot.rotation.x = api.spin; if (w.front) w.steer.rotation.y = steer; if (w.blur) { w.blur.visible = bo > 0.02; w.blur.material.opacity = bo; w.blur.rotation.z = api.spin; } } },
     dispose() { car.removeFromParent(); for (const m of mine) CARMATS.delete(m); },
   };
   return api;
