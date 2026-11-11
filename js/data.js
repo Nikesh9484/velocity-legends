@@ -1,5 +1,5 @@
 // Velocity Legends — game data: cars, tracks, disciplines, upgrades, paints
-export const VERSION = '1.23';
+export const VERSION = '1.24';
 
 // Car stats: hp (power), kg (mass), top (km/h top speed), grip (lateral g on tarmac), aero (downforce factor), brake (g), steer (lock rad),
 // wb (wheelbase m), len (model length m), drive ('rwd'|'awd'), loose (grip multiplier on dirt), cyl (engine sound), redline (rpm), gears
@@ -26,7 +26,7 @@ export const CARS = [
   { id: 'mcl35', n: 'Papaya F-35 Racer', cls: 'formula', origin: 'UK', price: 60000, hp: 1010, kg: 798, top: 350, grip: 1.95, aero: 2.5, brake: 2.25, steer: 0.42, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13000, gears: 8,
     f: 'mcl35', ry: 0, paint: /mcl35m_png|mcl35m_c/i, wheel: /rim_png|tyrewall|tread/i, col: '#ff8000', desc: 'Papaya-orange F1 car with razor-sharp turn-in.', open: true },
   { id: 'f_w14', n: 'Black Arrow W-14', cls: 'formula', origin: 'Germany', price: 0, hp: 1020, kg: 798, top: 350, grip: 1.95, aero: 2.5, brake: 2.25, steer: 0.42, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13000, gears: 8,
-    f: 'f_w14', ry: 0, paint: /x^/, wheel: /^(Material|Material\.00[1-4]|pirelli)$/, col: '#111317', desc: 'All-black ground-effect racer with a silver halo.', open: true },
+    f: 'f_w14', ry: 0, paint: /x^/, drop: /^(amg_logo|iwc_sponsor_1|INEOS_1|amd_png|petronas_png|teamviewer|44_lewis|sndg_bw_1|akkodis|Mercedes-Logo|petronas_logo|stynium|crowdstrike|pirelli)$/, wheel: /^(Material|Material\.00[1-4]|pirelli)$/, col: '#111317', desc: 'All-black ground-effect racer with a silver halo.', open: true },
   { id: 'f_sf23', n: 'Rosso Corsa SF-23', cls: 'formula', origin: 'Italy', price: 90000, hp: 1030, kg: 798, top: 352, grip: 1.95, aero: 2.45, brake: 2.25, steer: 0.43, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13200, gears: 8,
     f: 'f_sf23', ry: 0, paint: /x^/, wheel: 'auto', col: '#c1121f', desc: 'Scarlet Italian single-seater, monster straight-line speed.', open: true },
   { id: 'f_mcl60', n: 'Papaya MC-60', cls: 'formula', origin: 'UK', price: 85000, hp: 1015, kg: 798, top: 348, grip: 2.0, aero: 2.55, brake: 2.3, steer: 0.44, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13000, gears: 8,
@@ -34,7 +34,7 @@ export const CARS = [
   { id: 'f_amr23', n: 'Verde Racing AM-23', cls: 'formula', origin: 'UK', price: 80000, hp: 1010, kg: 798, top: 346, grip: 1.98, aero: 2.5, brake: 2.25, steer: 0.43, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13000, gears: 8,
     f: 'f_amr23', ry: 0, paint: /x^/, wheel: 'auto', col: '#0b6e4f', desc: 'British-racing-green challenger, superb in fast corners.', open: true },
   { id: 'f_rb22', n: 'Taurus RB-26 Concept', cls: 'formula', origin: 'Austria', price: 95000, hp: 1040, kg: 798, top: 355, grip: 2.0, aero: 2.6, brake: 2.3, steer: 0.44, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13500, gears: 8,
-    f: 'f_rb22', ry: 0, paint: /x^/, wheel: /wheel_hub|sidewall/i, col: '#0e2a5c', desc: 'Next-generation concept racer, midnight-blue and fast everywhere.', open: true },
+    f: 'f_rb22', ry: 0, paint: /x^/, drop: /redbull_decals|redbull_number|sw_decals/i, wheel: /wheel_hub|sidewall/i, col: '#0e2a5c', desc: 'Next-generation concept racer, midnight-blue and fast everywhere.', open: true },
   // ---------- RALLY ----------
   { id: 'yaris', n: 'Kaze GR Rally1', cls: 'rally', origin: 'Japan', price: 0, hp: 500, kg: 1260, top: 220, grip: 1.15, aero: 0.4, brake: 1.25, steer: 0.62, wb: 2.63, len: 4.2, drive: 'awd', loose: 0.92, cyl: 4, redline: 8000, gears: 6,
     f: 'yaris', ry: 0, paint: /car_paint/i, wheel: /^Object_(11|14|17|20)$/, col: '#e8e8e8', desc: 'Hybrid WRC weapon built for gravel and jumps.' },
