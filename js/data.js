@@ -1,5 +1,5 @@
 // Velocity Legends — game data: cars, tracks, disciplines, upgrades, paints
-export const VERSION = '1.20';
+export const VERSION = '1.21';
 
 // Car stats: hp (power), kg (mass), top (km/h top speed), grip (lateral g on tarmac), aero (downforce factor), brake (g), steer (lock rad),
 // wb (wheelbase m), len (model length m), drive ('rwd'|'awd'), loose (grip multiplier on dirt), cyl (engine sound), redline (rpm), gears
@@ -19,7 +19,7 @@ export const CARS = [
   { id: 'fxxk', n: 'Rosso XX Evo', cls: 'gt', origin: 'Italy', price: 150000, hp: 1036, kg: 1165, top: 350, grip: 1.6, aero: 1.5, brake: 1.65, steer: 0.55, wb: 2.65, len: 4.90, drive: 'rwd', loose: 0.45, cyl: 12, redline: 9200, gears: 7,
     f: 'fxxk', ry: 0, paint: /CARPAINT_Base/i, wheel: /Rim_Base|Rim_Blur|TYRE|DISK_BRAKE/i, col: '#c1121f', desc: 'The rarest track weapon money can buy.' },
   { id: 'rsr', n: 'Stuttgart 911 RSR', cls: 'gt', origin: 'Germany', price: 0, hp: 515, kg: 1245, top: 300, grip: 1.45, aero: 1.1, brake: 1.5, steer: 0.55, wb: 2.46, len: 4.57, drive: 'rwd', loose: 0.55, cyl: 6, redline: 9400, gears: 6,
-    f: 'rsr', ry: 0, paint: /part11|21Mtl/i, wheel: /rim191/i, col: '#f4f4f4', desc: 'Le Mans GT racer. Light, loud, balanced.' },
+    f: 'rsr', ry: 0, paint: /part11|21Mtl/i, wheel: /^Object_2[2-5]$/, col: '#f4f4f4', desc: 'Le Mans GT racer. Light, loud, balanced.' },
   // ---------- FORMULA ----------
   { id: 'w13', n: 'Silver Arrow W-13', cls: 'formula', origin: 'Germany', price: 0, hp: 1000, kg: 798, top: 345, grip: 1.9, aero: 2.4, brake: 2.2, steer: 0.42, wb: 3.6, len: 5.5, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13000, gears: 8,
     f: 'w13', ry: Math.PI, paint: /Body_Main|Body_Wings/i, wheel: /Tyre|WheelHub/i, col: '#bfc5c9', desc: 'Ground-effect F1 machine. Pure downforce.', open: true },
@@ -27,7 +27,7 @@ export const CARS = [
     f: 'mcl35', ry: 0, paint: /mcl35m_png|mcl35m_c/i, wheel: /rim_png|tyrewall|tread/i, col: '#ff8000', desc: 'Papaya-orange F1 car with razor-sharp turn-in.', open: true },
   // ---------- RALLY ----------
   { id: 'yaris', n: 'Kaze GR Rally1', cls: 'rally', origin: 'Japan', price: 0, hp: 500, kg: 1260, top: 220, grip: 1.15, aero: 0.4, brake: 1.25, steer: 0.62, wb: 2.63, len: 4.2, drive: 'awd', loose: 0.92, cyl: 4, redline: 8000, gears: 6,
-    f: 'yaris', ry: 0, paint: /car_paint/i, wheel: /x^/, col: '#e8e8e8', desc: 'Hybrid WRC weapon built for gravel and jumps.' },
+    f: 'yaris', ry: 0, paint: /car_paint/i, wheel: /^Object_(11|14|17|20)$/, col: '#e8e8e8', desc: 'Hybrid WRC weapon built for gravel and jumps.' },
   { id: 'delta', n: 'Integra Delta Evo II', cls: 'rally', origin: 'Italy', price: 30000, hp: 420, kg: 1150, top: 215, grip: 1.1, aero: 0.3, brake: 1.2, steer: 0.62, wb: 2.48, len: 3.9, drive: 'awd', loose: 0.9, cyl: 4, redline: 7500, gears: 5,
     f: 'delta', ry: 0, paint: /^Paint$/i, wheel: /rim|Tire/i, col: '#d40000', desc: 'Legendary boxy rally champion.' },
   // ---------- OFF-ROAD ----------

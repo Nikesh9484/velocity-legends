@@ -20,7 +20,7 @@ function prepare(root, wheelRx) {
   // bake transforms; merge everything that shares a material into one mesh (far fewer draw calls). Wheel parts stay separate so they can spin.
   const groups = new Map();
   for (const m of meshes) { const g = m.geometry.clone(); g.applyMatrix4(m.matrixWorld); g.translate(-ctr.x, -box.min.y, -ctr.z);
-    const mn = [].concat(m.material).map(x => x && x.name || '').join('|'); const isW = !!(wheelRx && (wheelRx.test(mn) || wheelRx.test(m.name)));
+    const mn = [].concat(m.material).map(x => x && x.name || '').join('|'); const isW = !!(wheelRx && (wheelRx.test(mn) || wheelRx.test(m.name) || (m.parent && wheelRx.test(m.parent.name))));
     if (Array.isArray(m.material)) { const n = new THREE.Mesh(g, m.material); n.name = m.name; n.userData.wheel = isW; flat.add(n); continue; }
     for (const k of Object.keys(g.attributes)) { const at = g.attributes[k]; if (!['position', 'normal', 'uv', 'uv1', 'tangent', 'color'].includes(k)) g.deleteAttribute(k); else if (at.isInterleavedBufferAttribute) g.setAttribute(k, at.clone()); }
     const key = (isW ? 'W|' : '') + m.material.uuid + '|' + Object.keys(g.attributes).sort().join(',') + '|' + !!g.index; if (!groups.has(key)) groups.set(key, { mat: m.material, list: [], name: m.name, w: isW }); groups.get(key).list.push(g); }
@@ -41,14 +41,14 @@ export function setFinish(m, f = 'metal') {
 // split one wheel mesh (often all four wheels in one mesh) into four pivots by quadrant
 function splitWheels(mesh, Lz) {
   const g = mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry; const pos = g.attributes.position; const n = pos.count / 3;
-  const quads = [[], [], [], []]; const tmp = new V3();
-  for (let t = 0; t < n; t++) { tmp.set(0, 0, 0); for (let k = 0; k < 3; k++) { tmp.x += pos.getX(t * 3 + k); tmp.z += pos.getZ(t * 3 + k); } const q = (tmp.x > 0 ? 1 : 0) + (tmp.z > 0 ? 2 : 0); quads[q].push(t); }
+  const quads = [[], [], [], [], []]; const tmp = new V3();
+  for (let t = 0; t < n; t++) { tmp.set(0, 0, 0); for (let k = 0; k < 3; k++) { tmp.x += pos.getX(t * 3 + k); tmp.z += pos.getZ(t * 3 + k); } const q = Math.abs(tmp.x / 3) < 0.35 ? 4 : (tmp.x > 0 ? 1 : 0) + (tmp.z > 0 ? 2 : 0); quads[q].push(t); } /* 4 = on the centre line (spare wheel) → stays fixed */
   const out = [];
-  for (let q = 0; q < 4; q++) {
+  for (let q = 0; q < 5; q++) {
     if (!quads[q].length) continue; const ng = new THREE.BufferGeometry();
     for (const [name, attr] of Object.entries(g.attributes)) { const sz = attr.itemSize, arr = new attr.array.constructor(quads[q].length * 3 * sz); let o = 0; for (const t of quads[q]) for (let k = 0; k < 3; k++) for (let c = 0; c < sz; c++) arr[o++] = attr.array[(t * 3 + k) * sz + c]; ng.setAttribute(name, new THREE.BufferAttribute(arr, sz, attr.normalized)); }
     ng.computeBoundingBox(); const c = ng.boundingBox.getCenter(new V3()); ng.translate(-c.x, -c.y, -c.z);
-    out.push({ q, c, geo: ng, front: c.z > 0 });
+    out.push({ q, c, geo: ng, front: c.z > 0, fixed: q === 4 });
   }
   return out;
 }
@@ -86,7 +86,7 @@ export async function buildCar(id, opts = {}) {
     for (const m of wm) {
       const g = m.geometry.clone(); g.applyMatrix4(m.matrixWorld); // car space
       const parts = splitWheels(new THREE.Mesh(g), C.len);
-      for (const p of parts) { const key = p.q; if (!groups[key]) { const pivot = new THREE.Group(); const steer = new THREE.Group(); steer.add(pivot); groups[key] = { steer, pivot, c: p.c.clone(), n: 0, front: p.front, r: 0 }; body.add(steer); }
+      for (const p of parts) { if (p.fixed) { const sm = new THREE.Mesh(p.geo, rimMat(m.material)); sm.position.copy(p.c); body.add(sm); continue; } const key = p.q; if (!groups[key]) { const pivot = new THREE.Group(); const steer = new THREE.Group(); steer.add(pivot); groups[key] = { steer, pivot, c: p.c.clone(), n: 0, front: p.front, r: 0 }; body.add(steer); }
         const G = groups[key]; const off = p.c.clone().sub(G.c); const mesh = new THREE.Mesh(p.geo, rimMat(m.material)); mesh.position.copy(off); mesh.castShadow = !opts.lo; G.pivot.add(mesh); p.geo.computeBoundingBox(); G.r = Math.max(G.r, (p.geo.boundingBox.max.y - p.geo.boundingBox.min.y) / 2); }
       m.removeFromParent();
     }

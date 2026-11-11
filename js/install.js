@@ -45,8 +45,8 @@ export async function ensureInstalled() {
     const failed = await fetchAll(need.filter(f => done[f[0]] !== f[2]), cache, base, done, show);
     if (!failed) break;
     d.querySelector('#instTxt').textContent = `Download interrupted (${failed} file${failed > 1 ? 's' : ''} left). Check the internet and tap RETRY.`;
-    const r = d.querySelector('#instRetry'), s = d.querySelector('#instSkip'); r.style.display = s.style.display = '';
-    const skip = await new Promise(res => { r.onclick = () => res(false); s.onclick = () => res(true); }); r.style.display = s.style.display = 'none';
+    const r = d.querySelector('#instRetry'), s = d.querySelector('#instSkip'); r.style.display = ''; /* install is mandatory: no skip */
+    const skip = await new Promise(res => { r.onclick = () => res(false); setTimeout(() => res(false), 15000); }); r.style.display = 'none'; /* auto-retry every 15 s */
     if (skip) break; d.querySelector('#instTxt').textContent = 'Resuming download…';
   }
   bar.style.width = '100%'; pc.textContent = '100%'; d.querySelector('#instTxt').textContent = 'Installed. The game now loads from this device.';
