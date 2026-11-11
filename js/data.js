@@ -1,5 +1,5 @@
 // Velocity Legends — game data: cars, tracks, disciplines, upgrades, paints
-export const VERSION = '1.22';
+export const VERSION = '1.23';
 
 // Car stats: hp (power), kg (mass), top (km/h top speed), grip (lateral g on tarmac), aero (downforce factor), brake (g), steer (lock rad),
 // wb (wheelbase m), len (model length m), drive ('rwd'|'awd'), loose (grip multiplier on dirt), cyl (engine sound), redline (rpm), gears
@@ -33,6 +33,8 @@ export const CARS = [
     f: 'f_mcl60', ry: 0, paint: /x^/, wheel: 'auto', col: '#ff7a00', desc: 'Papaya-and-black chassis with the sharpest turn-in.', open: true },
   { id: 'f_amr23', n: 'Verde Racing AM-23', cls: 'formula', origin: 'UK', price: 80000, hp: 1010, kg: 798, top: 346, grip: 1.98, aero: 2.5, brake: 2.25, steer: 0.43, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13000, gears: 8,
     f: 'f_amr23', ry: 0, paint: /x^/, wheel: 'auto', col: '#0b6e4f', desc: 'British-racing-green challenger, superb in fast corners.', open: true },
+  { id: 'f_rb22', n: 'Taurus RB-26 Concept', cls: 'formula', origin: 'Austria', price: 95000, hp: 1040, kg: 798, top: 355, grip: 2.0, aero: 2.6, brake: 2.3, steer: 0.44, wb: 3.6, len: 5.6, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13500, gears: 8,
+    f: 'f_rb22', ry: 0, paint: /x^/, wheel: /wheel_hub|sidewall/i, col: '#0e2a5c', desc: 'Next-generation concept racer, midnight-blue and fast everywhere.', open: true },
   // ---------- RALLY ----------
   { id: 'yaris', n: 'Kaze GR Rally1', cls: 'rally', origin: 'Japan', price: 0, hp: 500, kg: 1260, top: 220, grip: 1.15, aero: 0.4, brake: 1.25, steer: 0.62, wb: 2.63, len: 4.2, drive: 'awd', loose: 0.92, cyl: 4, redline: 8000, gears: 6,
     f: 'yaris', ry: 0, paint: /car_paint/i, wheel: /^Object_(11|14|17|20)$/, col: '#e8e8e8', desc: 'Hybrid WRC weapon built for gravel and jumps.' },
@@ -44,6 +46,10 @@ export const CARS = [
     f: 'r_fiesta', ry: 0, paint: /WCCARBODY/i, wheel: /ac3dmat123|ac3dmat126/i, drop: /ac3dmat124/i, col: '#c1121f', desc: 'Compact WRC hatch, nimble on loose gravel.' },
   { id: 'r_impreza', n: 'Pleiades WRX Rally', cls: 'rally', origin: 'Japan', price: 28000, hp: 340, kg: 1350, top: 215, grip: 1.1, aero: 0.35, brake: 1.15, steer: 0.62, wb: 2.62, len: 4.4, drive: 'awd', loose: 0.9, cyl: 4, redline: 7500, gears: 6,
     f: 'r_impreza', ry: 0, paint: /wrxM_CarPaint_Max1/i, wheel: /wrxM_Rim_Main|wrxM_RimBadge|Wheel1A/i, col: '#1f4fd1', desc: 'Boxer-engined blue legend with gold wheels.' },
+  { id: 'r_fabia', n: 'Bohemia R5 Rally', cls: 'rally', origin: 'Czechia', price: 32000, hp: 290, kg: 1230, top: 205, grip: 1.12, aero: 0.38, brake: 1.2, steer: 0.63, wb: 2.48, len: 4.0, drive: 'awd', loose: 0.92, cyl: 4, redline: 7500, gears: 5,
+    f: 'r_fabia', ry: Math.PI, paint: /x^/, wheel: /imp_wheel|^tread$/i, col: '#2a7d3f', desc: 'Light and agile R5 hatch, a gravel scalpel.' },
+  { id: 'r_i20', n: 'Hanseong N Rally1', cls: 'rally', origin: 'Korea', price: 50000, hp: 500, kg: 1260, top: 222, grip: 1.16, aero: 0.45, brake: 1.25, steer: 0.62, wb: 2.6, len: 4.2, drive: 'awd', loose: 0.92, cyl: 4, redline: 8000, gears: 6,
+    f: 'r_i20', ry: 0, paint: /x^/, wheel: /^Object_(57|59|61|63)$/, col: '#0e2a5c', desc: 'Hybrid Rally1 hatch with a huge rear wing.' },
   // ---------- OFF-ROAD ----------
   { id: 'buggy', n: 'Dune Buggy RX', cls: 'offroad', origin: 'USA', price: 0, hp: 380, kg: 820, top: 190, grip: 1.0, aero: 0.1, brake: 1.1, steer: 0.65, wb: 2.4, len: 3.6, drive: 'rwd', loose: 1.0, cyl: 4, redline: 7800, gears: 5,
     f: 'buggy', ry: 0, drop: /env_mat/i, paint: /car_mat/i, wheel: /wheels_mat/i, col: '#2a7d3f', desc: 'Long-travel desert buggy. Flies over dunes.', open: true },
