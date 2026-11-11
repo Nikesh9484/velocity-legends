@@ -4,7 +4,7 @@ import { S } from './state.js';
 export const IN = { throttle: 0, brake: 0, steer: 0, hand: 0, nitro: 0, reverse: false, tilt: 0, onCam: null, onPause: null, onReset: null, onShift: null, onLook: null };
 const K = {}; let tiltZero = null, tilt = 0, padSteer = 0, touch = { left: 0, right: 0, gas: 0, brake: 0, hand: 0, nitro: 0, wheel: 0 };
 addEventListener('keydown', e => { if (e.target.tagName === 'INPUT') return; K[e.code] = true; if (IN.onSkip && !e.repeat) IN.onSkip();
-  if (e.code === 'KeyC') IN.onCam && IN.onCam(); if (e.code === 'Escape' || e.code === 'KeyP') IN.onPause && IN.onPause(); if (e.code === 'KeyR') IN.onReset && IN.onReset();
+  if (e.code === 'KeyC') IN.onCam && IN.onCam(); if (e.code === 'Escape' || e.code === 'KeyP') IN.onPause && IN.onPause(); if (e.code === 'KeyR') IN.onReset && IN.onReset(); if (e.code === 'KeyU') IN.onUturn && IN.onUturn();
   if (e.code === 'KeyE') IN.onShift && IN.onShift(1); if (e.code === 'KeyQ') IN.onShift && IN.onShift(-1);
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault(); });
 addEventListener('keyup', e => { K[e.code] = false; });
@@ -52,6 +52,7 @@ export function bindTouch() {
   const hold = (el, key, val = 1) => { if (!el) return; const on = e => { e.preventDefault(); try { el.setPointerCapture(e.pointerId); } catch (_) {} touch[key] = val; el.classList.add('on'); if (S.set.haptics) haptic(8); }; const off = e => { e && e.preventDefault(); touch[key] = 0; el.classList.remove('on'); };
     el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off); el.addEventListener('lostpointercapture', off); };
   hold($('#tLeft'), 'left'); hold($('#tRight'), 'right'); hold($('#tGas'), 'gas'); hold($('#tBrake'), 'brake'); hold($('#tHand'), 'hand'); hold($('#tNitro'), 'nitro');
+  { const u = $('#tUturn'); if (u) u.addEventListener('pointerdown', e => { e.preventDefault(); u.classList.add('on'); setTimeout(() => u.classList.remove('on'), 150); if (S.set.haptics) haptic(20); IN.onUturn && IN.onUturn(); }); }
   // analog pedal: further up the pedal = more throttle
   // pedals are full on/off: instant response like a console racer
   // steering wheel mode

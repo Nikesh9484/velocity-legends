@@ -35,7 +35,7 @@ function paintMat(src, col, finish) {
   setFinish(m, finish); return m;
 }
 export function setFinish(m, f = 'metal') {
-  const F = { gloss: [0.05, 0.3], metal: [0.72, 0.3], pearl: [0.45, 0.22], matte: [0.3, 0.6], chrome: [1, 0.04] }[f] || [0.72, 0.3];
+  const F = { gloss: [0.05, 0.3], metal: [0.45, 0.24], pearl: [0.45, 0.22], matte: [0.3, 0.6], chrome: [1, 0.04] }[f] || [0.45, 0.24];
   m.metalness = F[0]; m.roughness = F[1]; m.clearcoat = f === 'matte' ? 0 : 1; m.clearcoatRoughness = 0.03; m.sheen = f === 'pearl' ? 1 : 0; m.sheenColor = new THREE.Color('#ffffff'); m.sheenRoughness = 0.3; m.needsUpdate = true;
 }
 // split one wheel mesh (often all four wheels in one mesh) into four pivots by quadrant

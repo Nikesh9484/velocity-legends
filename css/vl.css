@@ -389,3 +389,12 @@ body.touch[data-steer=tilt] #tSteer{color:#fff;border-color:#c8102e;box-shadow:0
 #s-setup .sbody,#s-setup .sfoot{max-width:none;align-self:stretch}
 #s-setup.st0,#s-setup.st1{background:linear-gradient(90deg,rgba(6,7,9,.94) 0,rgba(6,7,9,.9) 70%,rgba(6,7,9,.8) 100%)}
 #s-setup .hscroll{-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 40px),transparent);padding-right:40px}
+/* v1.18: discipline + track cards fill the whole screen width and height */
+#s-setup.st0 .hscroll,#s-setup.st1 .hscroll{-webkit-mask-image:none;mask-image:none;padding:10px 0 18px;height:calc(100vh - 170px);min-height:240px;align-items:stretch}
+#s-setup.st0 .tcard,#s-setup.st1 .tcard{flex:1 1 0;min-width:150px;height:auto}
+#s-setup.st0 .tcard b,#s-setup.st1 .tcard b{font-size:clamp(18px,2.2vw,30px)}
+@media (max-height:520px){#s-setup.st0 .hscroll,#s-setup.st1 .hscroll{height:calc(100vh - 130px)}}
+/* v1.18: N2O moved to the left thumb, above the steering arrows; bigger arrows */
+.tp.steer{width:min(16vw,132px);height:min(16vw,132px)}#tRight{left:calc(18px + min(16vw,132px) + 18px)}
+.tp.nitro{right:auto;left:22px;bottom:calc(22px + min(16vw,132px) + 22px)}
+.tp.uturn{left:calc(22px + 64px + 18px);bottom:calc(22px + min(16vw,132px) + 22px);background:radial-gradient(circle at 40% 30%,#ffb35a,#8a3a0b);border-color:#ffd59f;font-size:10px}

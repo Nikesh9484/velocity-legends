@@ -17,6 +17,7 @@ export class Vehicle {
     this.input = { throttle: 0, brake: 0, steer: 0, hand: 0, nitro: 0 }; this.auto = true; this.events = [];
   }
   place(p, yaw) { this.p.copy(p); this.yaw = yaw; this.v.set(0, 0, 0); this.yawRate = 0; const h = heightAt(p.x, p.z); this.y = h.y; this.ti = h.r.i; this.vy = 0; }
+  uturn(dir) { if (this.ut > 0) return; this.ut = 0.8; this.utDir = dir || (this.steer < 0 ? -1 : 1); this.events.push({ k: 'uturn' }); }
   gearRatio(g) { return 3.4 * Math.pow(0.74, g - 1) * (this.top < 60 ? 1.2 : 1); }
   step(dt) {
     const I = this.input, fx = Math.sin(this.yaw), fz = Math.cos(this.yaw);
@@ -38,17 +39,19 @@ export class Vehicle {
       if (I.reverse && vF < 1.5) F = -Math.min(I.throttle * P / 6, m * 4) * 0.5;
       if (I.brake > 0) { if (vF > 0.8) F -= I.brake * this.brakeG * G * m * (1 + down / 9.81 * 0.7) * Math.min(1, mu * 1.1); else F -= I.brake * 6 * m; }
       F -= this.cd * vF * Math.abs(vF) + (0.014 + S.drag * 0.25) * m * G * Math.sign(vF) * Math.min(1, Math.abs(vF)) + S.drag * 0.04 * m * vF;
-      if (I.hand) F -= Math.sign(vF) * 0.5 * m * G * Math.min(1, Math.abs(vF));
+      if (I.hand) F -= Math.sign(vF) * 0.22 * m * G * Math.min(1, Math.abs(vF));
     }
     vF += F / m * dt;
     // ----- steering & yaw -----
-    const steerLim = this.steerMax * clamp(1.15 - sp / 95, 0.22, 1); // less lock at speed
-    this.steer = lerp(this.steer, I.steer * steerLim, Math.min(1, dt * 16)); // quick response to the controls
+    const steerLim = this.steerMax * clamp(1.2 - sp / 110, 0.32, 1); // less lock at speed
+    this.steer = lerp(this.steer, I.steer * steerLim, Math.min(1, dt * 26)); // quick response to the controls
     let rT = vF / this.wb * Math.tan(this.steer); const maxR = gripA / Math.max(Math.abs(vF), 1); rT = clamp(rT, -maxR * 1.1, maxR * 1.1);
-    const handle = grounded ? (I.hand ? 5 : 15) * mu : 0.4; this.yawRate = lerp(this.yawRate, rT + (I.hand ? Math.sign(this.steer) * Math.min(1.2, Math.abs(vF) / 14) * Math.abs(I.steer) : 0), Math.min(1, dt * handle));
+    const handle = grounded ? (I.hand ? 5 : 22) * mu : 0.4; this.yawRate = lerp(this.yawRate, rT + (I.hand ? Math.sign(this.steer) * Math.min(1.2, Math.abs(vF) / 14) * Math.abs(I.steer) : 0), Math.min(1, dt * handle));
+    if (this.ut > 0) { const s = Math.min(dt, this.ut); this.ut -= dt; this.yawRate = this.utDir * Math.PI / 0.8 * s / dt; vF *= Math.exp(-dt * 2.2); if (this.ut <= 0) this.yawRate = 0; } /* one-tap 180° turn */
     this.yaw += this.yawRate * dt;
     // ----- lateral grip (drift happens when this can't keep up) -----
-    const latGrip = grounded ? (I.hand ? 1.1 : (TR.C && TR.C.loose ? 4.2 : 9)) * mu * (this.loose > 0.8 && TR.C && TR.C.loose ? 0.85 : 1) : 0.05;
+    this.driftT = I.hand ? 1 : Math.max(0, (this.driftT || 0) - dt * 1.1); /* grip comes back gradually after the handbrake → long, controllable drifts */
+    const latGrip = this.ut > 0 ? 40 : grounded ? (I.hand ? 1.1 : (1 - 0.7 * this.driftT) * (TR.C && TR.C.loose ? 4.2 : 9)) * mu * (this.loose > 0.8 && TR.C && TR.C.loose ? 0.85 : 1) : 0.05;
     const nfx = Math.sin(this.yaw), nfz = Math.cos(this.yaw);
     const vx = fx * vF + fz * vL, vz = fz * vF - fx * vL; // world velocity keeps its direction while the body yaws → slip angle
     vF = vx * nfx + vz * nfz; vL = vx * nfz - vz * nfx; vL *= Math.exp(-latGrip * dt);

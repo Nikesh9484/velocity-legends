@@ -14,7 +14,7 @@ function glowTex(stops) { const c = document.createElement('canvas'); c.width = 
 function beamTex() { const c = document.createElement('canvas'); c.width = 64; c.height = 256; const x = c.getContext('2d'); const g = x.createLinearGradient(0, 0, 0, 256); g.addColorStop(0, 'rgba(255,255,255,0.9)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 256); const h = x.createLinearGradient(0, 0, 64, 0); h.addColorStop(0, 'rgba(0,0,0,1)'); h.addColorStop(0.5, 'rgba(0,0,0,0)'); h.addColorStop(1, 'rgba(0,0,0,1)'); x.globalCompositeOperation = 'destination-out'; x.fillStyle = h; x.fillRect(0, 0, 64, 256); return new THREE.CanvasTexture(c); }
 export async function showroom(on) {
   if (!on) { if (SHOW.g) SHOW.g.visible = false; return; }
-  await setSky('studio'); Q.mpr = Math.min(Q.mpr || 9, menuPR()); setPR(Q.mpr); POST.on = !POST.off;
+  await setSky('studio'); Q.mpr = Math.min(Q.mpr || 9, menuPR()); setPR(Q.mpr); POST.on = true; /* menus are static: always full glow + colour grade, even on Android */
   if (!SHOW.g) { SHOW.g = new THREE.Group(); scene.add(SHOW.g); const G = SHOW.g;
     // mirror floor + dark lacquer layer that fades the reflection out to black at the edges
     const res = Math.min(1024, Math.round(innerWidth * Math.min(devicePixelRatio, 2) * 0.5));
@@ -47,7 +47,7 @@ export async function showroom(on) {
     SHOW.darkSet = G.children.filter(o => o !== SHOW.disc && o !== shadowFloor && o !== key && o !== key.target);
     const wf = new THREE.Mesh(new THREE.CircleGeometry(60, 64), new THREE.MeshStandardMaterial({ color: '#eceef1', roughness: 0.42, metalness: 0 })); wf.rotation.x = -PI / 2; wf.position.y = -0.001; wf.receiveShadow = true;
     const cove = new THREE.Mesh(new THREE.SphereGeometry(30, 48, 24, 0, PI * 2, 0, PI / 2), new THREE.MeshBasicMaterial({ color: '#dfe2e6', side: THREE.BackSide, fog: true }));
-    const hw = new THREE.HemisphereLight('#ffffff', '#b9bec4', 1.4), dw = new THREE.DirectionalLight('#ffffff', 1.3); dw.position.set(4, 10, 6);
+    const hw = new THREE.HemisphereLight('#ffffff', '#b9bec4', 0.6), dw = new THREE.DirectionalLight('#ffffff', 2.4); dw.position.set(4, 10, 6);
     SHOW.whiteSet = [wf, cove, hw, dw]; SHOW.whiteSet.forEach(o => { o.visible = false; G.add(o); });
     const cv = $('#gl'); cv.addEventListener('pointerdown', e => { if (RACE.on) return; SHOW.drag = { x: e.clientX, r: SHOW.rot }; }); addEventListener('pointerup', () => SHOW.drag = null);
     addEventListener('pointermove', e => { if (SHOW.drag && !RACE.on) SHOW.rot = SHOW.drag.r + (e.clientX - SHOW.drag.x) * 0.008; });
@@ -101,7 +101,7 @@ const ICON = {
   clock: '<svg viewBox="0 0 32 32"><circle cx="16" cy="17" r="11" class="s"/><path d="M16 10v7l5 3M13 3h6" class="s"/></svg>',
   garage: '<svg viewBox="0 0 32 32"><path d="M3 13L16 4l13 9v15H3z" class="f"/><path d="M8 16h16v12H8z" class="d"/><path d="M8 19h16M8 22h16M8 25h16" class="s2"/></svg>',
   gear: '<svg viewBox="0 0 32 32"><path d="M14 3h4l1 4 3 1 3-2 3 3-2 3 1 3 4 1v4l-4 1-1 3 2 3-3 3-3-2-3 1-1 4h-4l-1-4-3-1-3 2-3-3 2-3-1-3-4-1v-4l4-1 1-3-2-3 3-3 3 2 3-1z" class="f"/><circle cx="16" cy="16" r="5" class="d"/></svg>',
-};
+}; ICON.gt = ICON.hyper;
 const RENDER = {
   title() { $('#tName').value = S.name; },
   hub() { $('#hubCoins').textContent = S.coins.toLocaleString(); $('#hubLv').textContent = 'LV ' + S.level; $('#hubXp').style.width = (S.xp / needXP(S.level) * 100) + '%'; $('#hubName').textContent = S.name; showCar(SET.car); },

@@ -47,7 +47,7 @@ export async function startRace(cfg, onProgress = () => {}) {
   for (let slot = 0; slot <= n; slot++) {
     const isMe = slot === myslot; const C = isMe ? mine : pool[(k++ + (pool.length > 1 ? 1 : 0)) % pool.length];
     const up = isMe ? ups(C.id) : {}; const veh = new Vehicle(C, up); if (sky === 'rain') veh.gripG *= 0.82;
-    const gs = gridSlot(slot); veh.place(gs.p, gs.yaw); veh.auto = isMe ? S.set.trans !== 'manual' : true;
+    const gs = gridSlot(slot); veh.place(gs.p, gs.yaw); veh.grid = { p: gs.p.clone ? gs.p.clone() : { ...gs.p }, yaw: gs.yaw }; veh.auto = isMe ? S.set.trans !== 'manual' : true;
     const pp = isMe ? paintOf(C.id) : null; const col = pp ? pp.c : isMe ? C.col : PAINTS[(slot * 5 + 3) % PAINTS.length]; const fin = pp ? pp.f : ['metal', 'gloss', 'pearl'][slot % 3];
     const car = { veh, C, me: isMe, name: isMe ? S.name : names[slot % names.length], lap: 0, half: false, best: Infinity, lapStart: 0, lastLap: 0, fin: 0, finT: 0, total: 0, rank: slot, voice: null, col, finCls: fin };
     const light = !isMe && isTouch && Q.level < 3; // phones/tablets: opponents use the light model only
@@ -62,11 +62,12 @@ export async function startRace(cfg, onProgress = () => {}) {
   const night = sky === 'night' || sky === 'rain'; for (const c of list) { c.model.setHeadlights(night); c.model.setBrake(false, night); }
   RACE.cam = RACE.cam % CAMS.length; makeWheel(RACE.me);
   // qualifying times + intro sequence (front-runners, then you), then the race title over the grid
-  const avg = { formula: 52, hyper: 46, rally: 30, offroad: 27 }[mine.cls] || 42, base = TR.len / avg; list.forEach((c, k) => { c.qt = base * (1 + k * 0.0035 + Math.random() * 0.002); });
+  const avg = { formula: 52, hyper: 46, gt: 47, rally: 30, offroad: 27 }[mine.cls] || 42, base = TR.len / avg; list.forEach((c, k) => { c.qt = base * (1 + k * 0.0035 + Math.random() * 0.002); });
   const seq = list.slice(0, 3); if (!seq.includes(RACE.me)) seq.push(RACE.me); RACE.intro = { seq, t: 0, per: 1.7, title: 2.6 };
   RACE.on = true; RACE.phase = 'intro'; RACE.lightsN = 0; RACE.cT = 0; RACE.goT = 1 + Math.random() * 1.2; setStartLights(0); snapCamera(); onProgress(1);
   IN.onSkip = () => { if (RACE.phase === 'intro') endIntro(); };
   IN.onCam = () => { RACE.cam = (RACE.cam + 1) % CAMS.length; S.set.cam = RACE.cam; RACE.msg = { t: CAMS[RACE.cam] + ' CAMERA', life: 1.2 }; };
+  IN.onUturn = () => { if (RACE.phase === 'race' && RACE.me) { const v = RACE.me.veh; v.uturn(IN.steer < -0.1 ? -1 : IN.steer > 0.1 ? 1 : 0); RACE.msg = { t: 'U-TURN', life: 0.8 }; } };
   IN.onReset = () => resetCar(RACE.me); IN.onShift = d => { if (RACE.me && !RACE.me.veh.auto) d > 0 ? RACE.me.veh.shiftUp() : RACE.me.veh.shiftDown(); };
   return RACE;
 }
@@ -86,13 +87,14 @@ export function updateRace(dt) {
   // controls
   const mv = me.veh; mv.input.throttle = IN.throttle; mv.input.brake = IN.brake; mv.input.steer = IN.steer; mv.input.hand = IN.hand; mv.input.nitro = IN.nitro;
   if (S.set.assist && racing) { const lim = (LINE.vmax[(mv.ti + 10) % TR.N] || 99) * 1.06; if (mv.speed > lim + 4 && IN.brake < 0.2 && Math.abs(IN.steer) > 0.25) mv.input.throttle *= 0.6; } // gentle traction/corner assist
-  RACE.revT = IN.brake > 0.5 && mv.vF < 1 && IN.throttle < 0.1 && racing && RACE.t - (RACE.raceT0 || 0) > 2 ? (RACE.revT || 0) + dt : 0; mv.input.reverse = RACE.revT > 0.45; /* reverse only after holding brake while stopped */ if (mv.input.reverse) { mv.input.throttle = IN.brake; mv.input.brake = 0; }
+  RACE.revT = IN.brake > 0.5 && mv.vF < 1 && IN.throttle < 0.1 && racing && RACE.t - (RACE.raceT0 || 0) > 4 ? (RACE.revT || 0) + dt : 0; mv.input.reverse = RACE.revT > 0.8; /* reverse only after holding brake while stopped */ if (mv.input.reverse) { mv.input.throttle = IN.brake; mv.input.brake = 0; }
   if (me.fin) { mv.input.throttle = 0.25; mv.input.brake = 0; mv.input.steer = 0; }
   const ranks = RACE.cars.map(c => c.rank);
   for (const c of RACE.cars) if (c.driver) { if (!racing) { c.veh.input.throttle = 0; c.veh.input.brake = 1; continue; } const r = c.driver.update(dt, RACE.cars.map(o => o.veh), c.rank, me.rank); if (r === 'reset') resetCar(c); }
   if (!racing) { mv.input.brake = 1; mv.input.throttle = 0; mv.input.steer = 0; mv.input.hand = 0; mv.input.nitro = 0; mv.input.reverse = false; mv.rpmFree = IN.throttle; } // car is held still on the grid: gas only revs the engine
   // physics substeps
   const sub = clamp(Math.ceil(dt / 0.0125), 2, 8), h = dt / sub; for (let k = 0; k < sub; k++) { for (const c of RACE.cars) c.veh.step(h); collideCars(RACE.cars.map(c => c.veh)); }
+  if (!racing) for (const c of RACE.cars) { const g = c.veh.grid; if (g) { c.veh.place(g.p, g.yaw); c.veh.vF = 0; } } /* every car is locked on its grid slot until GO — no rolling, turning or reversing */
   if (!racing) { mv.rpm = lerp(mv.rpm, 900 + IN.throttle * (mv.redline - 1500), Math.min(1, dt * 6)); }
   // laps & positions
   for (const c of RACE.cars) progress(c);

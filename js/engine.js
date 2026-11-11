@@ -21,12 +21,12 @@ export const canvas = document.getElementById('gl');
 export const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', stencil: false });
 renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = isTouch ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
-export const Q = { level: lowEnd ? 1 : isTouch ? 2 : 3, pr: 1, shadows: true }; // 1 low · 2 medium · 3 high · 4 ultra
+export const Q = { level: lowEnd || (isTouch && !isApple) ? 1 : isTouch ? 2 : 3, pr: 1, shadows: true }; // 1 low · 2 medium · 3 high · 4 ultra
 if (isTouch && !isApple) Q.noShadow = true; // Android phones/tablets: no real-time shadows by default — keeps the frame rate (and control response) up
 const PRT = isTouch ? (isApple ? [0, 0.9, 1.25, 1.6, 2.2] : [0, 0.75, 1, 1.3, 1.8]) : [0, 0.85, 1, 1.4, 2]; // Android tablets: start lighter, adaptive code raises it when there is headroom
 export function prCap() { return Math.min(window.devicePixelRatio || 1, PRT[Q.level] || 1); }
 // menus/showroom are light to draw: always render them sharp
-export function menuPR() { return Math.min(window.devicePixelRatio || 1, isTouch ? (Q.level >= 3 ? 1.6 : isApple ? 1.35 : 1.1) : 1.6); }
+export function menuPR() { return Math.min(window.devicePixelRatio || 1, isTouch ? (Q.level >= 3 ? 1.6 : isApple ? 1.5 : 1.4) : 1.6); }
 export function applyQuality(level) {
   if (level) Q.level = level; Q.pr = prCap(); setPR(Q.pr); POST.on = Q.level >= 2 && !POST.off;
   renderer.shadowMap.enabled = Q.level >= 2 && !Q.noShadow; sun.castShadow = Q.level >= 2 && !Q.noShadow; const sm = [0, 512, 1024, 2048, 4096][Q.level];
@@ -105,8 +105,8 @@ function carEnvOf(key, bg) {
   if (carEnvCache[key]) return carEnvCache[key];
   const sc = new THREE.Scene(), white = key === 'white', studio = key === 'studio' || white, night = key === 'night';
   if (bg) { const sk = new THREE.Mesh(envSph, new THREE.MeshBasicMaterial({ map: bg, side: THREE.BackSide, color: new THREE.Color(1, 1, 1).multiplyScalar(night ? 0.7 : 0.8) })); sk.rotation.y = -PI / 2; sc.add(sk); }
-  else { sc.background = new THREE.Color(white ? '#a9aeb4' : '#050608'); const fl = new THREE.Mesh(new THREE.CircleGeometry(40, 32), new THREE.MeshBasicMaterial({ color: white ? '#d7dade' : '#0b0c0e' })); fl.rotation.x = -PI / 2; fl.position.y = -1; sc.add(fl); }
-  const k = studio ? 1 : night ? 0.35 : 0.55; // soft-box strength
+  else { sc.background = new THREE.Color(white ? '#34383e' : '#050608'); const fl = new THREE.Mesh(new THREE.CircleGeometry(40, 32), new THREE.MeshBasicMaterial({ color: white ? '#d7dade' : '#0b0c0e' })); fl.rotation.x = -PI / 2; fl.position.y = -1; sc.add(fl); }
+  const k = studio ? 1 : night ? 0.4 : 0.85; // soft-box strength
   lightformer(sc, 14, 3.2, [0, 9, 0], [0, 0, 0], 4.5 * k);              // long overhead box
   lightformer(sc, 14, 1.2, [0, 8, 4], [0, 0, 0], 3.2 * k);
   lightformer(sc, 14, 1.2, [0, 8, -4], [0, 0, 0], 3.2 * k);

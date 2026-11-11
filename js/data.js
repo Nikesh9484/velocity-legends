@@ -1,5 +1,5 @@
 // Velocity Legends — game data: cars, tracks, disciplines, upgrades, paints
-export const VERSION = '1.17';
+export const VERSION = '1.18';
 
 // Car stats: hp (power), kg (mass), top (km/h top speed), grip (lateral g on tarmac), aero (downforce factor), brake (g), steer (lock rad),
 // wb (wheelbase m), len (model length m), drive ('rwd'|'awd'), loose (grip multiplier on dirt), cyl (engine sound), redline (rpm), gears
@@ -14,11 +14,11 @@ export const CARS = [
     f: 'huayra', ry: 0, paint: /Coloured|Base_Material/i, wheel: /Wheel1A/i, col: '#c8c9cc', desc: 'Hand-built carbon art with a V12 heart.' },
   { id: 'revuelto', n: 'Toro Furia V12 Hybrid', cls: 'hyper', origin: 'Italy', price: 70000, hp: 1001, kg: 1772, top: 350, grip: 1.3, aero: 0.75, brake: 1.35, steer: 0.55, wb: 2.78, len: 4.95, drive: 'awd', loose: 0.6, cyl: 12, redline: 9500, gears: 8,
     f: 'revuelto', ry: 0, paint: /^Body$/i, wheel: /^Tire$|^Logo$|Caliper|Brake_rotor|^material$/i, col: '#f2b705', desc: 'Screaming naturally-aspirated V12 plus three e-motors.' },
-  { id: 'p1gtr', n: 'Mercurio P1 GTR', cls: 'hyper', origin: 'UK', price: 110000, hp: 986, kg: 1440, top: 350, grip: 1.55, aero: 1.4, brake: 1.6, steer: 0.55, wb: 2.67, len: 4.60, drive: 'rwd', loose: 0.45, cyl: 8, redline: 8500, gears: 7,
+  { id: 'p1gtr', n: 'Mercurio P1 GTR', cls: 'gt', origin: 'UK', price: 110000, hp: 986, kg: 1440, top: 350, grip: 1.55, aero: 1.4, brake: 1.6, steer: 0.55, wb: 2.67, len: 4.60, drive: 'rwd', loose: 0.45, cyl: 8, redline: 8500, gears: 7,
     f: 'p1gtr', ry: 0, paint: /main_body/i, wheel: /^tires$|^rims$|^disk|^brake$|tire_logo/i, col: '#ff7a00', desc: 'Track-only hybrid with a giant rear wing.' },
-  { id: 'fxxk', n: 'Rosso XX Evo', cls: 'hyper', origin: 'Italy', price: 150000, hp: 1036, kg: 1165, top: 350, grip: 1.6, aero: 1.5, brake: 1.65, steer: 0.55, wb: 2.65, len: 4.90, drive: 'rwd', loose: 0.45, cyl: 12, redline: 9200, gears: 7,
+  { id: 'fxxk', n: 'Rosso XX Evo', cls: 'gt', origin: 'Italy', price: 150000, hp: 1036, kg: 1165, top: 350, grip: 1.6, aero: 1.5, brake: 1.65, steer: 0.55, wb: 2.65, len: 4.90, drive: 'rwd', loose: 0.45, cyl: 12, redline: 9200, gears: 7,
     f: 'fxxk', ry: 0, paint: /CARPAINT_Base/i, wheel: /Rim_Base|Rim_Blur|TYRE|DISK_BRAKE/i, col: '#c1121f', desc: 'The rarest track weapon money can buy.' },
-  { id: 'rsr', n: 'Stuttgart 911 RSR', cls: 'hyper', origin: 'Germany', price: 40000, hp: 515, kg: 1245, top: 300, grip: 1.45, aero: 1.1, brake: 1.5, steer: 0.55, wb: 2.46, len: 4.57, drive: 'rwd', loose: 0.55, cyl: 6, redline: 9400, gears: 6,
+  { id: 'rsr', n: 'Stuttgart 911 RSR', cls: 'gt', origin: 'Germany', price: 0, hp: 515, kg: 1245, top: 300, grip: 1.45, aero: 1.1, brake: 1.5, steer: 0.55, wb: 2.46, len: 4.57, drive: 'rwd', loose: 0.55, cyl: 6, redline: 9400, gears: 6,
     f: 'rsr', ry: 0, paint: /part11|21Mtl/i, wheel: /rim191/i, col: '#f4f4f4', desc: 'Le Mans GT racer. Light, loud, balanced.' },
   // ---------- FORMULA ----------
   { id: 'w13', n: 'Silver Arrow W-13', cls: 'formula', origin: 'Germany', price: 0, hp: 1000, kg: 798, top: 345, grip: 1.9, aero: 2.4, brake: 2.2, steer: 0.42, wb: 3.6, len: 5.5, drive: 'rwd', loose: 0.35, cyl: 6, redline: 13000, gears: 8,
@@ -42,20 +42,21 @@ export const CAR = id => CARS.find(c => c.id === id) || CARS[0];
 
 export const CLASSES = {
   formula: { n: 'FORMULA', d: 'Open-wheel Grand Prix cars. Extreme downforce and braking.', icon: 'formula' },
-  hyper: { n: 'HYPERCARS', d: 'The world\'s most exclusive supercars and GT racers.', icon: 'hyper' },
+  hyper: { n: 'HYPERCARS', d: 'The world\'s fastest and most exclusive road supercars.', icon: 'hyper' },
+  gt: { n: 'GT ENDURANCE', d: 'Le Mans-style GT and track-only racers. Wings, slicks and kerbs.', icon: 'hyper' },
   rally: { n: 'RALLY', d: 'All-wheel-drive rally weapons on gravel and dirt.', icon: 'rally' },
   offroad: { n: 'OFF-ROAD', d: 'Trophy trucks and buggies over dunes and mud.', icon: 'offroad' },
 };
 
 // Tracks: control points [x, z, elevation, width]; closed loops (counter-clockwise ok)
 export const TRACKS = [
-  { id: 'gp', flag: 'mc', place: 'MONTE VELARO · MONACO', n: 'Monte Velaro Grand Prix', cls: ['formula', 'hyper'], sky: 'day', surf: 'asphalt', scen: 'gp', laps: 3, km: 0,
+  { id: 'gp', flag: 'mc', place: 'MONTE VELARO · MONACO', n: 'Monte Velaro Grand Prix', cls: ['formula', 'hyper', 'gt'], sky: 'day', surf: 'asphalt', scen: 'gp', laps: 3, km: 0,
     desc: 'Fast sweeping Grand Prix circuit with grandstands, kerbs and gravel traps.',
     pts: [[0, 0, 0, 15], [0, 260, 0, 15], [20, 380, 1, 14], [90, 440, 2, 14], [200, 450, 3, 14], [290, 400, 3, 14], [320, 310, 2, 14], [300, 220, 1, 14], [240, 170, 1, 14], [230, 100, 1, 14], [290, 40, 2, 14], [360, 0, 3, 14], [380, -90, 3, 14], [330, -170, 2, 14], [230, -200, 1, 14], [120, -190, 0, 14], [40, -150, 0, 14], [5, -90, 0, 15]] },
-  { id: 'street', flag: 'ae', place: 'MARINA BAY · UAE', n: 'Neon Marina Night Circuit', cls: ['formula', 'hyper'], sky: 'night', surf: 'asphalt', scen: 'city', laps: 3, scale: 1.3,
+  { id: 'street', flag: 'ae', place: 'MARINA BAY · UAE', n: 'Neon Marina Night Circuit', cls: ['formula', 'hyper', 'gt'], sky: 'night', surf: 'asphalt', scen: 'city', laps: 3, scale: 1.3,
     desc: 'Tight city street circuit under the lights, walls on every side.',
     pts: [[0, 0, 0, 13], [0, 200, 0, 13], [10, 260, 0, 12], [60, 280, 0, 12], [180, 280, 0, 12], [230, 250, 0, 12], [240, 180, 0, 12], [200, 130, 0, 12], [200, 60, 0, 12], [260, 20, 0, 12], [280, -60, 0, 12], [240, -120, 0, 12], [150, -130, 0, 12], [90, -90, 0, 12], [40, -110, 0, 12], [5, -70, 0, 13]] },
-  { id: 'coast', flag: 'it', place: 'AMALFI COAST · ITALY', n: 'Sunset Coast Ring', cls: ['hyper', 'formula'], sky: 'sunset', surf: 'asphalt', scen: 'coast', laps: 2,
+  { id: 'coast', flag: 'it', place: 'AMALFI COAST · ITALY', n: 'Sunset Coast Ring', cls: ['hyper', 'formula', 'gt'], sky: 'sunset', surf: 'asphalt', scen: 'coast', laps: 2,
     desc: 'Flowing hillside road above the sea, golden-hour light.',
     pts: [[0, 0, 0, 13], [-20, 180, 6, 13], [10, 330, 14, 12], [110, 420, 20, 12], [240, 430, 18, 12], [340, 360, 12, 12], [380, 240, 8, 12], [470, 160, 10, 12], [500, 40, 6, 12], [440, -80, 2, 12], [330, -150, 0, 12], [200, -160, 2, 12], [90, -110, 1, 13], [30, -60, 0, 13]] },
   { id: 'dunes', flag: 'ma', place: 'ERG CHEBBI · MOROCCO', n: 'Sahara Dune Rally', cls: ['rally', 'offroad'], sky: 'clear', surf: 'gravel', scen: 'desert', laps: 2,
@@ -84,6 +85,7 @@ export const UPGRADES = [
 export const CHAMPS = [
   { id: 'c_formula', n: 'GRAND PRIX WORLD SERIES', cls: 'formula', races: [['gp', 'day'], ['coast', 'sunset'], ['street', 'night']], prize: 60000 },
   { id: 'c_hyper', n: 'HYPERCAR MILLIONAIRES CUP', cls: 'hyper', races: [['coast', 'sunset'], ['street', 'night'], ['gp', 'overcast']], prize: 80000 },
+  { id: 'c_gt', n: 'GT ENDURANCE TROPHY', cls: 'gt', races: [['gp', 'overcast'], ['coast', 'sunset'], ['street', 'night']], prize: 70000 },
   { id: 'c_rally', n: 'WORLD RALLY CHAMPIONSHIP', cls: 'rally', races: [['dunes', 'clear'], ['forest', 'overcast'], ['dunes', 'sunset']], prize: 50000 },
   { id: 'c_off', n: 'BAJA OFF-ROAD SERIES', cls: 'offroad', races: [['forest', 'overcast'], ['dunes', 'clear'], ['forest', 'rain']], prize: 45000 },
 ];
