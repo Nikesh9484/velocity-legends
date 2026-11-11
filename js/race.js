@@ -199,7 +199,7 @@ function drawWheel(car, dt) { const W = car.wheelUI; if (!W) return; W.g.rotatio
 function lerpAng(a, b, t) { let d = b - a; while (d > PI) d -= 2 * PI; while (d < -PI) d += 2 * PI; return a + d * t; }
 function snapCamera() { camTarget(camPos, camLook); const v = RACE.me.veh; camOff.set(camPos.x - v.p.x, camPos.y - v.y, camPos.z - v.p.z); camera.position.copy(camPos); camera.lookAt(camLook); }
 function updateCamera(dt) {
-  const v = RACE.me.veh; camTarget(_p, camLook); const k = RACE.cam <= 1 ? 1 - Math.exp(-dt * 9) : 1; const carP = _o.set(v.p.x, v.y, v.p.z); camOff.lerp(_p.sub(carP), k); camPos.copy(carP).add(camOff);
+  const v = RACE.me.veh; camTarget(_p, camLook); const k = RACE.cam <= 1 ? 1 - Math.exp(-dt * 15) : 1; const carP = _o.set(v.p.x, v.y, v.p.z); camOff.lerp(_p.sub(carP), k); camPos.copy(carP).add(camOff);
   const gh = heightAt(camPos.x, camPos.z, v.ti).y + 0.4; if (camPos.y < gh) camPos.y = gh;
   camera.position.copy(camPos); const sh = (RACE.shake || 0) + (TR.C.loose ? Math.min(0.15, v.speed / 400) : 0) + (v.boost ? 0.08 : 0);
   if (sh > 0) camera.position.add(_p.set(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)).multiplyScalar(sh * 0.06));

@@ -43,15 +43,15 @@ export class Vehicle {
     }
     vF += F / m * dt;
     // ----- steering & yaw -----
-    const steerLim = this.steerMax * clamp(1.2 - sp / 110, 0.32, 1); // less lock at speed
-    this.steer = lerp(this.steer, I.steer * steerLim, Math.min(1, dt * 26)); // quick response to the controls
-    let rT = vF / this.wb * Math.tan(this.steer); const maxR = gripA / Math.max(Math.abs(vF), 1); rT = clamp(rT, -maxR * 1.1, maxR * 1.1);
-    const handle = grounded ? (I.hand ? 5 : 22) * mu : 0.4; this.yawRate = lerp(this.yawRate, rT + (I.hand ? Math.sign(this.steer) * Math.min(1.2, Math.abs(vF) / 14) * Math.abs(I.steer) : 0), Math.min(1, dt * handle));
+    const steerLim = this.steerMax * clamp(1.25 - sp / 120, 0.45, 1); // less lock at speed
+    this.steer = lerp(this.steer, I.steer * steerLim, Math.min(1, dt * 60)); // near-instant response to the controls
+    let rT = vF / this.wb * Math.tan(this.steer); const maxR = gripA / Math.max(Math.abs(vF), 1); rT = clamp(rT, -maxR * 1.6, maxR * 1.6); /* arcade: turns harder than real grip allows */
+    const handle = grounded ? (I.hand ? 5 : 40) * mu : 0.4; this.yawRate = lerp(this.yawRate, rT + (I.hand ? Math.sign(this.steer) * Math.min(1.2, Math.abs(vF) / 14) * Math.abs(I.steer) : 0), Math.min(1, dt * handle));
     if (this.ut > 0) { const s = Math.min(dt, this.ut); this.ut -= dt; this.yawRate = this.utDir * Math.PI / 0.8 * s / dt; vF *= Math.exp(-dt * 2.2); if (this.ut <= 0) this.yawRate = 0; } /* one-tap 180° turn */
     this.yaw += this.yawRate * dt;
     // ----- lateral grip (drift happens when this can't keep up) -----
     this.driftT = I.hand ? 1 : Math.max(0, (this.driftT || 0) - dt * 1.1); /* grip comes back gradually after the handbrake → long, controllable drifts */
-    const latGrip = this.ut > 0 ? 40 : grounded ? (I.hand ? 1.1 : (1 - 0.7 * this.driftT) * (TR.C && TR.C.loose ? 4.2 : 9)) * mu * (this.loose > 0.8 && TR.C && TR.C.loose ? 0.85 : 1) : 0.05;
+    const latGrip = this.ut > 0 ? 40 : grounded ? (I.hand ? 1.1 : (1 - 0.7 * this.driftT) * (TR.C && TR.C.loose ? 5.5 : 13)) * mu * (this.loose > 0.8 && TR.C && TR.C.loose ? 0.85 : 1) : 0.05;
     const nfx = Math.sin(this.yaw), nfz = Math.cos(this.yaw);
     const vx = fx * vF + fz * vL, vz = fz * vF - fx * vL; // world velocity keeps its direction while the body yaws → slip angle
     vF = vx * nfx + vz * nfz; vL = vx * nfz - vz * nfx; vL *= Math.exp(-latGrip * dt);

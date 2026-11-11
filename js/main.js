@@ -7,10 +7,12 @@ import { RACE, updateRace } from './race.js';
 import { hudUpdate } from './hud.js';
 import { initUI, show, showroom, updateShowroom, showCar } from './ui.js';
 import { preloadCar } from './carmodel.js';
+import { ensureInstalled } from './install.js';
 
 Q.auto = Q.level; initPost(); resize(); applyQuality(S.set.quality || Q.auto); if (isTouch) document.body.classList.add('touch');
 initUI(); POST.mul = (S.set.bloom ?? 5) / 5; POST.film = S.set.film !== false; AU.eng = S.set.engVol ?? 1; document.body.classList.toggle('nomap', S.set.hudMap === false); document.body.classList.toggle('noboard', S.set.hudBoard === false); document.body.classList.toggle('notimes', S.set.hudTimes === false);
 (async () => {
+  await ensureInstalled(); // first launch: download the whole game to the device (progress screen); later launches: instant
   const bar = $('#bootBar'), msg = $('#bootMsg'), t0 = performance.now(); bar.style.width = '18%';
   await showroom(true); bar.style.width = '50%'; msg.textContent = 'POLISHING THE PAINTWORK';
   await showCar(S.last.car); bar.style.width = '100%'; msg.textContent = 'READY';

@@ -14,7 +14,7 @@ function glowTex(stops) { const c = document.createElement('canvas'); c.width = 
 function beamTex() { const c = document.createElement('canvas'); c.width = 64; c.height = 256; const x = c.getContext('2d'); const g = x.createLinearGradient(0, 0, 0, 256); g.addColorStop(0, 'rgba(255,255,255,0.9)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 256); const h = x.createLinearGradient(0, 0, 64, 0); h.addColorStop(0, 'rgba(0,0,0,1)'); h.addColorStop(0.5, 'rgba(0,0,0,0)'); h.addColorStop(1, 'rgba(0,0,0,1)'); x.globalCompositeOperation = 'destination-out'; x.fillStyle = h; x.fillRect(0, 0, 64, 256); return new THREE.CanvasTexture(c); }
 export async function showroom(on) {
   if (!on) { if (SHOW.g) SHOW.g.visible = false; return; }
-  await setSky('studio'); Q.mpr = Math.min(Q.mpr || 9, menuPR()); setPR(Q.mpr); POST.on = true; /* menus are static: always full glow + colour grade, even on Android */
+  await setSky('studio'); Q.mpr = Math.min(Q.mpr || 9, menuPR()); setPR(Q.mpr); POST.on = !POST.off; /* Android: no glow pass — its bloom blew the floor lights into big red/white blobs */
   if (!SHOW.g) { SHOW.g = new THREE.Group(); scene.add(SHOW.g); const G = SHOW.g;
     // mirror floor + dark lacquer layer that fades the reflection out to black at the edges
     const res = Math.min(1024, Math.round(innerWidth * Math.min(devicePixelRatio, 2) * 0.5));
@@ -22,7 +22,7 @@ export async function showroom(on) {
     const lac = new THREE.Mesh(new THREE.CircleGeometry(60, 64), new THREE.MeshBasicMaterial({ color: '#030405', transparent: true, alphaMap: glowTex([[0, '#5a5a5a'], [0.08, '#808080'], [0.35, '#e6e6e6'], [1, '#ffffff']]), depthWrite: false })); lac.rotation.x = -PI / 2; lac.position.y = 0.002; G.add(lac);
     const shadowFloor = new THREE.Mesh(new THREE.CircleGeometry(9, 48), new THREE.ShadowMaterial({ opacity: 0.55 })); shadowFloor.rotation.x = -PI / 2; shadowFloor.position.y = 0.13; shadowFloor.receiveShadow = true; G.add(shadowFloor);
     // turntable: brushed dark metal with a glowing red edge
-    const disc = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 3.72, 0.12, 96), new THREE.MeshPhysicalMaterial({ color: '#0f1013', metalness: 0.9, roughness: 0.32, clearcoat: 1, clearcoatRoughness: 0.1 })); disc.position.y = 0.06; disc.receiveShadow = true; G.add(disc); SHOW.disc = disc;
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 3.72, 0.12, 96), new THREE.MeshPhysicalMaterial({ color: '#0f1013', metalness: 0.5, roughness: 0.55, clearcoat: 0.6, clearcoatRoughness: 0.35 })); disc.position.y = 0.06; disc.receiveShadow = true; G.add(disc); SHOW.disc = disc;
     const ring = new THREE.Mesh(new THREE.TorusGeometry(3.7, 0.03, 8, 128), new THREE.MeshBasicMaterial({ color: new THREE.Color('#ff2a2a').multiplyScalar(3) })); ring.rotation.x = PI / 2; ring.position.y = 0.1; G.add(ring); SHOW.ring = ring;
     const halo = new THREE.Mesh(new THREE.PlaneGeometry(11, 11), new THREE.MeshBasicMaterial({ map: glowTex([[0, 'rgba(255,40,30,0)'], [0.6, 'rgba(255,40,30,0)'], [0.66, 'rgba(255,40,30,0.55)'], [0.78, 'rgba(255,40,30,0)']]), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); halo.rotation.x = -PI / 2; halo.position.y = 0.11; G.add(halo); SHOW.halo = halo;
     // light architecture: overhead soft-box bar and an arc of vertical light blades behind the car
@@ -42,7 +42,7 @@ export async function showroom(on) {
     SHOW.dust = new THREE.Points(dg, new THREE.PointsMaterial({ size: 0.035, color: '#ffffff', transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending, map: glowTex([[0, '#fff'], [1, 'rgba(255,255,255,0)']]) })); G.add(SHOW.dust);
     // lights: soft top key (with shadow), red and blue rims, low front fill
     const key = new THREE.SpotLight('#ffffff', 220, 30, 0.55, 0.7, 1.6); key.position.set(0, 9, 1); key.target.position.set(0, 0, 0); key.castShadow = !isTouch; key.shadow.mapSize.set(1024, 1024); key.shadow.bias = -0.0005; G.add(key, key.target);
-    for (const [x, z, c, I] of [[-7, -5, '#ff3a2a', 22], [7, -5, '#6aa8ff', 28], [0, 8, '#ffffff', 30]]) { const l = new THREE.SpotLight(c, I, 30, 0.42, 0.9, 1.5); l.position.set(x, 3.2, z); l.target.position.set(0, 0.9, 0); G.add(l, l.target); }
+    for (const [x, z, c, I] of [[-7, -5, '#ff3a2a', isTouch ? 7 : 22], [7, -5, '#6aa8ff', isTouch ? 10 : 28], [0, 8, '#ffffff', 30]]) { const l = new THREE.SpotLight(c, I, 30, 0.42, 0.9, 1.5); l.position.set(x, 3.2, z); l.target.position.set(0, 0.9, 0); G.add(l, l.target); }
     // bright "infinity cove" studio for car selection (Monoposto-style), toggled with setStudio(true)
     SHOW.darkSet = G.children.filter(o => o !== SHOW.disc && o !== shadowFloor && o !== key && o !== key.target);
     const wf = new THREE.Mesh(new THREE.CircleGeometry(60, 64), new THREE.MeshStandardMaterial({ color: '#eceef1', roughness: 0.42, metalness: 0 })); wf.rotation.x = -PI / 2; wf.position.y = -0.001; wf.receiveShadow = true;

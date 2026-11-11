@@ -23,7 +23,7 @@ renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.A
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = isTouch ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
 export const Q = { level: lowEnd || (isTouch && !isApple) ? 1 : isTouch ? 2 : 3, pr: 1, shadows: true }; // 1 low · 2 medium · 3 high · 4 ultra
 if (isTouch && !isApple) Q.noShadow = true; // Android phones/tablets: no real-time shadows by default — keeps the frame rate (and control response) up
-const PRT = isTouch ? (isApple ? [0, 0.9, 1.25, 1.6, 2.2] : [0, 0.75, 1, 1.3, 1.8]) : [0, 0.85, 1, 1.4, 2]; // Android tablets: start lighter, adaptive code raises it when there is headroom
+const PRT = isTouch ? (isApple ? [0, 0.9, 1.25, 1.6, 2.2] : [0, 1.2, 1.3, 1.5, 1.8]) : [0, 0.85, 1, 1.4, 2]; // Android tablets: start lighter, adaptive code raises it when there is headroom
 export function prCap() { return Math.min(window.devicePixelRatio || 1, PRT[Q.level] || 1); }
 // menus/showroom are light to draw: always render them sharp
 export function menuPR() { return Math.min(window.devicePixelRatio || 1, isTouch ? (Q.level >= 3 ? 1.6 : isApple ? 1.5 : 1.4) : 1.6); }
